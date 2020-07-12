@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Mis tareas Del dia</string>
+
+
+    <string name="navResourceOpen">Open</string>
+    <string name="navResourceClose">Close</string>
+</resources>

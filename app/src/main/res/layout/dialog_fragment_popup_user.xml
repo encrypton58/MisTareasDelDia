@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_progress_background"
+    android:orientation="vertical"
+    android:gravity="center"
+
+    >
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:id="@+id/dialogUserImage"
+        android:layout_width="176dp"
+        android:layout_height="178dp"
+        android:layout_marginBottom="20dp"
+        app:srcCompat="@drawable/adduser_image_user" />
+
+    <TextView
+        android:id="@+id/dialogUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hola Usuario"
+        android:textSize="20sp"
+        android:textColor="@color/negro"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+
+        <Button
+            android:id="@+id/dialogButtonOk"
+            android:text="Aceptar"
+            android:layout_marginStart="120dp"
+            android:layout_marginEnd="120dp"
+            android:layout_width="wrap_content"
+            android:textColor="@color/white"
+            android:background="@color/colorAccent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+    </RelativeLayout>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.activityEditTask">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-2dp"
+        tools:layout_editor_absoluteY="-11dp">
+
+        <View
+            android:id="@+id/view4"
+            android:layout_width="match_parent"
+            android:layout_height="101dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/titleEditTarea"
+            android:layout_width="207dp"
+            android:layout_height="42dp"
+            android:layout_alignBottom="@+id/view4"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="86dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="86dp"
+            android:layout_marginBottom="23dp"
+            android:text="Edita tu tarea"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contrainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="204dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+            app:layout_constraintVertical_bias="0.056">
+
+            <EditText
+                android:id="@+id/editTaskEditTitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:autofillHints="@string/app_name"
+                android:drawablePadding="5dp"
+                android:ems="10"
+                android:hint="Editar Titulo"
+                android:inputType="textPersonName"
+                android:textColor="@color/moreWhite"
+                android:textColorHint="@color/moreWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/editTaskEditTime"
+                android:layout_width="112dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/colorPrimary"
+                android:text="Editar hora"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.507"
+                app:layout_constraintStart_toEndOf="@+id/editTaskEditTitulo"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/editTaskEditDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:autofillHints="@string/app_name"
+
+                android:drawablePadding="5dp"
+                android:ems="10"
+                android:hint="Editar tu descripcion"
+                android:inputType="textPersonName"
+                android:textColor="@color/moreWhite"
+                android:textColorHint="@color/moreWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTaskEditTitulo" />
+
+            <Button
+                android:id="@+id/editTaskEditDesigned"
+                android:layout_width="112dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/colorPrimary"
+                android:text="Editar Tiempo Desdignado"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.522"
+                app:layout_constraintStart_toEndOf="@+id/editTaskEditDescription"
+                app:layout_constraintTop_toBottomOf="@+id/editTaskEditTime" />
+
+            <Button
+                android:id="@+id/editTaskEditTask"
+                android:layout_width="176dp"
+                android:layout_height="52dp"
+                android:background="@android:color/holo_green_light"
+                android:text="Editar Tarea"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTaskEditDescription" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="310dp"
+            android:layout_below="@+id/view4"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="11dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.147"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view4">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/typeTitleEditarTarea3"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="titulo:"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="84dp"
+                    tools:layout_editor_absoluteY="214dp" />
+
+                <TextView
+                    android:id="@+id/editTaskShowTitleTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sacar la ropa a tender ejemplo"
+                    android:textColor="@color/negro"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="236dp"
+                    tools:layout_editor_absoluteY="198dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="43dp">
+
+                <TextView
+                    android:id="@+id/typeDescripcionEditarTarea2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="descripcion:"
+                    tools:layout_editor_absoluteY="292dp" />
+
+                <TextView
+                    android:id="@+id/editTaskShowDescriptionTaks"
+                    android:layout_width="283dp"
+                    android:layout_height="63dp"
+                    android:text="Sacar la ropa a tender es muy importante por que es ropa de iban"
+                    android:textColor="@color/negro"
+                    tools:layout_editor_absoluteX="184dp"
+                    tools:layout_editor_absoluteY="227dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/typeDesignadoEditarTarea2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="tiempo\ndesignado:"
+                    tools:layout_editor_absoluteX="46dp"
+                    tools:layout_editor_absoluteY="227dp" />
+
+                <TextView
+                    android:id="@+id/editTaskShowTimeDesigned"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="Tiempo Designado 10mins."
+                    android:textColor="@color/negro"
+                    tools:layout_editor_absoluteX="272dp"
+                    tools:layout_editor_absoluteY="174dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <TextView
+                    android:id="@+id/typeHoraEditarTarea2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hora\nestablecida:"
+                    tools:layout_editor_absoluteX="108dp"
+                    tools:layout_editor_absoluteY="284dp" />
+
+                <TextView
+                    android:id="@+id/editTaskShowTimeTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:text="Hora establecida 10:20"
+                    android:textColor="@color/negro"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="186dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="36dp">
+
+                <TextView
+                    android:id="@+id/typeFechaEditarTarea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="fecha:"
+                    tools:layout_editor_absoluteX="130dp"
+                    tools:layout_editor_absoluteY="251dp" />
+
+                <TextView
+                    android:id="@+id/editTaskShowDateTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="fecha establecida 02/04/2020"
+                    android:textColor="@color/negro"
+                    tools:layout_editor_absoluteX="238dp"
+                    tools:layout_editor_absoluteY="263dp" />
+
+            </TableRow>
+        </TableLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addTaskLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.activityAddTask">
+
+    <EditText
+        android:id="@+id/addTaskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_above="@+id/addTaskPickTime"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="15dp"
+        android:autofillHints="@string/navResourceClose"
+        android:ems="10"
+        android:hint="añade un titulo para la tarea"
+        android:inputType="textPersonName"
+        android:textColor="@color/moreWhite"
+        android:textColorHint="@color/moreWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/addTaskDescription"
+        android:layout_width="335dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskshowDesigned"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="28dp"
+        android:autofillHints="@string/navResourceClose"
+        android:ems="10"
+        android:hint="añade una descripcion"
+        android:inputType="textPersonName"
+        android:textColor="@color/negro"
+        android:textColorHint="@color/moreWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskShowTime" />
+
+    <Button
+        android:id="@+id/addTaskAdd"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="92dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginBottom="26dp"
+        android:background="@android:color/holo_green_light"
+        android:text="Agregar tarea"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskshowDesigned"
+        app:layout_constraintVertical_bias="0.348" />
+
+    <Button
+        android:id="@+id/addTaskPickDesigned"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskAdd"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="58dp"
+        android:layout_marginBottom="44dp"
+        android:background="@color/colorAccent"
+        android:text="Designado"
+        android:textColor="@color/moreWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.329"
+        app:layout_constraintStart_toEndOf="@+id/addTaskshowDesigned"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskDescription" />
+
+    <Button
+        android:id="@+id/addTaskPickTime"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorAccent"
+        android:text="Hora"
+        android:textColor="@color/moreWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintStart_toEndOf="@+id/addTaskShowTime"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskTitle" />
+
+    <TextView
+        android:id="@+id/addTaskshowDesigned"
+        android:layout_width="156dp"
+        android:layout_height="41dp"
+        android:layout_above="@+id/addTaskAdd"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="40dp"
+        android:text="selecciona el tiempo designado"
+        android:textColor="@color/negro"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskDescription" />
+
+    <TextView
+        android:id="@+id/addTaskShowTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskshowDesigned"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="118dp"
+        android:text="selecciona una hora"
+        android:textColor="@color/negro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskTitle" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="139dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="-3dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/view"
+        android:layout_alignBottom="@+id/view"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="36dp"
+        android:gravity="center"
+        android:text="añade una tarea a la lista"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+</RelativeLayout>

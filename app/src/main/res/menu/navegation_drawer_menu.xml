@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <group android:checkableBehavior="single">
+        <item
+            android:checked="true"
+            android:id="@+id/nav_menu_home"
+            android:icon="@drawable/nav_home_icon"
+            android:title="home" />
+        <item
+            android:id="@+id/nav_menu_edit"
+            android:icon="@drawable/nav_edit_profile_icon"
+            android:title="Editar perfil" />
+        <item
+            android:id="@+id/nav_menu_about"
+            android:icon="@drawable/nav_drawable_open_icon"
+            android:title="sobreLaApp" />
+        <item
+            android:id="@+id/nav_menu_taskDo"
+            android:icon="@drawable/nav_drawable_open_icon"
+            android:title="tareasRealizadas"
+            />
+    </group>
+
+
+    <item android:title="Sobre la aplicacion">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_menu_about_app"
+                    android:icon="@drawable/nav_drawable_open_icon"
+                    android:title="Sobre la app" />
+                <item
+                    android:id="@+id/nav_menu_options"
+                    android:icon="@drawable/nav_options_icon"
+                    android:title="Opciones de la app" />
+            </group>
+        </menu>
+
+    </item>
+
+</menu>
