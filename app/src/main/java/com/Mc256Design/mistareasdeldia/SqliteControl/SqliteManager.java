@@ -94,8 +94,8 @@ public class SqliteManager extends SQLiteOpenHelper {
 
     public void insertDataCompleteTasks(int id, String titulo, String hora, String descripcion, String fecha, String horas_designadas){
         SQLiteDatabase db = this.getWritableDatabase();
-        String insert = "INSERT INTO " + TABLANAMETAREAS + "(id,titulo,hora,minuto,descripcion,fecha,horas_designadas)" +
-                "VALUES(NULL,'" + titulo + "','" + hora + "'', '" + descripcion + "','" + fecha + "','" + horas_designadas+"')";
+        String insert = "INSERT INTO " + TABLANAMECOMPLETE + "(id,titulo,hora,descripcion,fecha,horas_designadas)" +
+                "VALUES(" + id + ",'" + titulo + "','" + hora + "'', '" + descripcion + "','" + fecha + "','" + horas_designadas+"')";
 
         SQLiteStatement statement = db.compileStatement(insert);
         statement.executeInsert();
@@ -104,7 +104,7 @@ public class SqliteManager extends SQLiteOpenHelper {
 
     public void deleteCompleteTask(){
         SQLiteDatabase db = this.getWritableDatabase();
-        String delete = "DELETE FROM Completadas";
+        String delete = "DELETE FROM " + TABLANAMECOMPLETE;
         SQLiteStatement statement = db.compileStatement(delete);
         statement.execute();
     }
@@ -112,7 +112,7 @@ public class SqliteManager extends SQLiteOpenHelper {
 
     public Cursor queryAllRegistersCompleteTasks(){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLANAMETAREAS, null );
+        return db.rawQuery("SELECT * FROM " + TABLANAMECOMPLETE, null );
     }
 
 

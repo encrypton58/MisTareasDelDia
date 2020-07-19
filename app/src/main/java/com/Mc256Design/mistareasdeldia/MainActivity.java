@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO: instance of class
     NavDrawerImplementation ImplementsNavegationDrawer;
     SqliteManager sqliteManager;
-    SetDarkMode darkMode;
     //TODO: context
     Context context;
     //TODO: recyclerview variables
@@ -80,13 +79,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.refreshLayout = this.findViewById(R.id.swipeRefresLayout);
         this.showUserImage = this.findViewById(R.id.mainShowImageUser);
         this.showNoTask = this.findViewById(R.id.mainNoWorksText);
+        setDarkMode();
         this.ImplementsNavegationDrawer = new NavDrawerImplementation(context, this, MainActivity.this, R.id.nav_menu_home);
-        darkMode = new SetDarkMode(context, this);
         sqliteManager = new SqliteManager(context);
 
         if (checkUserInsertDataBase()){
             this.recyclerShowTask.setLayoutManager(new LinearLayoutManager(this));
-            adapterItems = new recyclerAdapterItems(getTareas());
+            adapterItems = new recyclerAdapterItems(getTareas(), MainActivity.this);
             recyclerShowTask.setAdapter(adapterItems);
             ItemTouchHelper.SimpleCallback simpleCallback =
                     new swipeTasks(0, ItemTouchHelper.LEFT, MainActivity.this, context);
@@ -281,6 +280,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         androidx.work.WorkManager.getInstance(this).cancelAllWorkByTag(tag);
     }
 
+    //TODO: establece el darkMode
+    private void setDarkMode(){
+        SetDarkMode darkMode = new SetDarkMode(context, this);
+        ArrayList<TextView> views = new ArrayList<>();
+        views.add(showDia);
+        views.add(showNoTask);
+        views.add(showUser);
+        darkMode.setDarkModeTextViews(views);
+    }
+
 //TODO: --------metodos que se sobreescriben para el uso de la app-------------
 
     @Override
@@ -323,14 +332,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 i.putExtra("des", des_tarea);
                 i.putExtra("fecha", fecha_tarea);
                 i.putExtra("designado", designado_tarea);
-                deleteWorkManagerFromTask(String.valueOf(id_tarea));
-                sqliteManager.deleteTareas(id_tarea);
                 if(TimerService.instancia != null){
                     new TimerService().stopBecauseDeleteTask(context);
                 }
                 stopService(new Intent(getApplicationContext(), TimerService.class));
+                this.finish();
                 startActivity(i);
-
+                overridePendingTransition(R.anim.slide_in_rigth, R.anim.slide_out_left);
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.Mc256Design.mistareasdeldia.RecyclerClass;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -13,10 +14,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.Mc256Design.mistareasdeldia.ClassRequired.tarea;
 import com.Mc256Design.mistareasdeldia.R;
+import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,17 +31,22 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private TextView tituloView, descripView,horaView,designadoView,fechaView,idView, positionView;
         public TextView eliminarTextoItem, editarTextItem;
+        public CardView card;
         private View view;
         public ConstraintLayout layoutABorrar;
-        public RelativeLayout borrarEditar;
+        public RelativeLayout borrarEditar, parentLayout;
         ImageView editarIcon, borrarIcon;
         String titulo,descipcion ,designado, fecha;
         int hora, minuto;
         int id;
+        AppCompatActivity app;
 
-        ViewHolder(final View itemView){
+        ViewHolder(final View itemView , AppCompatActivity app){
             super(itemView);
+            this.app = app;
+            this.parentLayout = itemView.findViewById(R.id.item_recycler_parent_layout);
             view = itemView.findViewById(R.id.changeColor);
+            card = itemView.findViewById(R.id.item_recycler_card);
             borrarEditar = itemView.findViewById(R.id.editar_borrar);
             editarTextItem = itemView.findViewById(R.id.editarTextoItem);
             eliminarTextoItem = itemView.findViewById(R.id.eliminarTextoItem);
@@ -49,6 +60,7 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             idView = itemView.findViewById(R.id.id_tarea);
             positionView = itemView.findViewById(R.id.positionView);
             layoutABorrar = itemView.findViewById(R.id.layoutABorrar);
+            setDarkMode();
             final ImageButton opcionesTarea = itemView.findViewById(R.id.opcionesItems);
 
             idView.setVisibility(View.INVISIBLE);
@@ -75,6 +87,25 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             });
 
         }
+
+        private void setDarkMode(){
+            SetDarkMode darkMode = new SetDarkMode(app.getApplicationContext(),app);
+            darkMode.setDarkModeLayout(layoutABorrar);
+            darkMode.setDarkModeLayout(parentLayout);
+            ArrayList<CardView> card = new ArrayList<>();
+            card.add(this.card);
+            ArrayList<TextView> textViews = new ArrayList<>();
+            textViews.add(tituloView);
+            textViews.add(descripView);
+            textViews.add(horaView);
+            textViews.add(designadoView);
+            textViews.add(fechaView);
+            textViews.add(idView);
+            textViews.add(positionView);
+            darkMode.setDarkModeCards(card);
+            darkMode.setDarkModeTextViews(textViews);
+        }
+
     }
 
     public void removeItem(int position){
@@ -84,16 +115,20 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
     }
 
     public List<tarea> tareaList;
+    public Context context;
+    public AppCompatActivity app;
 
-    public recyclerAdapterItems(List<tarea> tareaList){
+    public recyclerAdapterItems(List<tarea> tareaList, AppCompatActivity app){
         this.tareaList = tareaList;
+        this.context = app.getApplicationContext();
+        this.app = app;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_layout_items,parent,false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, app);
     }
 
 

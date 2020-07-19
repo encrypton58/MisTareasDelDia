@@ -6,7 +6,7 @@
     android:id="@+id/globalDrawerLayout"
     android:layout_height="match_parent"
     tools:context=".activities.activityEditUser"
-    tools:openDrawer="start">
+    >
 
     <com.google.android.material.navigation.NavigationView
         android:layout_width="wrap_content"

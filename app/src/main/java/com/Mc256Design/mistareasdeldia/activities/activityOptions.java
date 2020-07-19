@@ -2,36 +2,33 @@ package com.Mc256Design.mistareasdeldia.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
 import com.Mc256Design.mistareasdeldia.navDrawerControl.NavDrawerImplementation;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+
 public class activityOptions extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //TODO: widgets
-    TextView showTypeMode;
-    Switch activeMode;
+    CheckBox activeMode;
     CardView cardView;
     //TODO: context
     Context context;
     SharedPreferences sharedPreferences;
     //TODO: instancia de clases
     NavDrawerImplementation navegation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +41,12 @@ public class activityOptions extends AppCompatActivity implements NavigationView
     }
 
     private void initialElements(){
-        SetDarkMode darkMode = new SetDarkMode(context, this);
-        this.showTypeMode = this.findViewById(R.id.optionsShowTypeMode);
         this.activeMode = this.findViewById(R.id.optionsActiveDarkMode);
         this.cardView = this.findViewById(R.id.cardView);
         this.navegation = new NavDrawerImplementation(context,this,activityOptions.this, R.id.nav_menu_options);
         if (sharedPreferences.getBoolean("isEnableDarkMode", false)){
             this.activeMode.setChecked(true);
-            darkMode.setDarkModeCards(cardView);
-            darkMode.setDarkModeTextViews(showTypeMode);
-
+            setDarkModeActivity();
         }else{
             this.activeMode.setChecked(false);
         }
@@ -69,17 +62,37 @@ public class activityOptions extends AppCompatActivity implements NavigationView
                 edit.putBoolean("isEnableDarkMode", false);
                 edit.apply();
             }
-            this.navegation = null;
-            this.navegation = new NavDrawerImplementation(context, this, activityOptions.this, R.id.nav_menu_options);
             restartActivity();
         });
 
     }
 
-    private void restartActivity(){
-        Intent intent = new Intent(context, activityOptions.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.activity_up_transition, R.anim.activity_fade_transition);
+    private void setDarkModeActivity(){
+        SetDarkMode darkMode = new SetDarkMode(context, this);
+        ArrayList<CardView> card = new ArrayList<>();
+        ArrayList<CheckBox> check = new ArrayList<>();
+        card.add(cardView);
+        check.add(activeMode);
+        darkMode.setDarkModeCards(card);
+        darkMode.setDarkModeCheckBox(check);
+        navegation = null;
+        navegation = new NavDrawerImplementation(context,this,activityOptions.this, R.id.nav_menu_options);
+    }
+
+    protected void restartActivity(){
+
+        CountDownTimer timer = new CountDownTimer(500, 500) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                setDarkModeActivity();
+            }
+        };
+        timer.start();
     }
 
     @Override
@@ -87,4 +100,6 @@ public class activityOptions extends AppCompatActivity implements NavigationView
         navegation.onNavigationItemSelected(item);
         return true;
     }
+
+
 }

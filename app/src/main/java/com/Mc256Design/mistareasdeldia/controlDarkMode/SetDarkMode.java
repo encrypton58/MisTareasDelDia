@@ -7,14 +7,17 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.Mc256Design.mistareasdeldia.R;
 import com.google.android.material.navigation.NavigationView;
+import java.util.ArrayList;
 
 
 public class SetDarkMode{
@@ -77,22 +80,76 @@ public class SetDarkMode{
         }
     }
 
-    public void setDarkModeCards(CardView card){
+    public void setDarkModeCards(ArrayList<CardView> cardArray){
         if(isEnabledDarkMode){
-            card.setCardBackgroundColor(Color.rgb(71,68,68));
+            for(int i = 0; i <= cardArray.size() - 1; i++){
+                cardArray.get(i).setCardBackgroundColor(colorBlack);
+            }
         }else{
-            card.setCardBackgroundColor(colorWhite);
+            for (int i = 0; i == cardArray.size()-1; i++) {
+                cardArray.get(i).setCardBackgroundColor(colorWhite);
+            }
         }
 
     }
 
-    public void setDarkModeTextViews(TextView view){
+    public void setDarkModeCheckBox(ArrayList<CheckBox> checkList){
         if(isEnabledDarkMode){
-            view.setTextColor(colorWhite);
+            for(int i = 0; i == checkList.size() - 1; i++){
+                checkList.get(i).setTextColor(colorWhite);
+            }
+        }else{
+            for (int i = 0; i == checkList.size()-1; i++) {
+                checkList.get(i).setTextColor(colorBlack);
+            }
+        }
+    }
+
+    public void setDarkModeTextViews(ArrayList<TextView> textViewArrayList){
+        if(isEnabledDarkMode){
+            for (int i = 0; i <= textViewArrayList.size() - 1; i++) {
+                textViewArrayList.get(i).setTextColor(colorWhite);
+            }
         }else {
-            view.setTextColor(colorBlack);
+            for (int i = 0; i <= textViewArrayList.size()-1; i++) {
+                textViewArrayList.get(i).setTextColor(colorBlack);
+            }
         }
 
+    }
+
+    public void setDarkModeEditText(ArrayList<EditText> editTextArrayList){
+        if(isEnabledDarkMode){
+            for (int i = 0; i <= editTextArrayList.size() - 1; i++) {
+                editTextArrayList.get(i).setTextColor(colorWhite);
+                editTextArrayList.get(i).setHintTextColor(colorWhite);
+                editTextArrayList.get(i).setBackgroundTintList(colorWhenIsEnabled);
+            }
+        }else {
+            for (int i = 0; i <= editTextArrayList.size()-1; i++) {
+                editTextArrayList.get(i).setTextColor(colorBlack);
+                editTextArrayList.get(i).setHintTextColor(colorBlack);
+                editTextArrayList.get(i).setBackgroundTintList(colorWhenIsNoEnabled);
+            }
+        }
+
+    }
+
+    public void setDarkModeLayout(RelativeLayout layout){
+        if (isEnabledDarkMode){
+            layout.setBackground(app.getDrawable(R.drawable.item_view_backgroud_swipe));
+        }else{
+            layout.setBackground(app.getDrawable(R.drawable.item_view_background));
+        }
+
+    }
+
+    public void setDarkModeLayout(ConstraintLayout layout){
+        if (isEnabledDarkMode){
+            layout.setBackground(app.getDrawable(R.drawable.item_view_backgroud_swipe));
+        }else {
+            layout.setBackground(app.getDrawable(R.drawable.item_view_background));
+        }
     }
 
 }

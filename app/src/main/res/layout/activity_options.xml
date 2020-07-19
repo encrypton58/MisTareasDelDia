@@ -52,8 +52,8 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="154dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
             android:layout_below="@+id/globalToolbar"
             android:layout_alignBottom="@+id/view5"
             android:layout_alignParentStart="true"
@@ -61,7 +61,7 @@
             android:layout_marginStart="105dp"
             android:layout_marginTop="41dp"
             android:layout_marginEnd="101dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="21dp"
             android:gravity="center"
             android:text="Menu de opciones"
             android:textColor="@color/white"
@@ -96,31 +96,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/optionsShowTypeMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="22dp"
-                    android:layout_marginTop="44dp"
-                    android:layout_marginBottom="37dp"
-                    android:text="Activar modo oscuro"
-                    android:textColor="@color/moreWhite" />
-
-                <Switch
+                <CheckBox
                     android:id="@+id/optionsActiveDarkMode"
-                    android:layout_width="49dp"
-                    android:layout_height="21dp"
+                    android:layout_width="201dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginStart="85dp"
-                    android:layout_marginTop="42dp"
-                    android:layout_marginEnd="43dp"
-                    android:layout_marginBottom="35dp"
-                    android:layout_toEndOf="@+id/optionsShowTypeMode" />
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="147dp"
+                    android:layout_marginBottom="25dp"
+                    android:text="Activar Modo oscurito bb" />
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>

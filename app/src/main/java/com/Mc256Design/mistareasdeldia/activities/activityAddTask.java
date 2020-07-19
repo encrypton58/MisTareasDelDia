@@ -20,7 +20,9 @@ import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Set;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
 , TimePickerDialog.OnTimeSetListener{
@@ -40,7 +42,6 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     int hourSystem;
     //TODO: intancia de clases
     SqliteManager sqliteManager;
-    SetDarkMode darkMode;
     Calendar c;
     //TODO: boleanos
     boolean isSetTomorrow;
@@ -63,7 +64,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         this.pickTime = this.findViewById(R.id.addTaskPickTime);
         this.pickDesigned = this.findViewById(R.id.addTaskPickDesigned);
         this.addTask = this.findViewById(R.id.addTaskAdd);
-        this.darkMode = new SetDarkMode(context, this);
+        setDarkMode();
         sqliteManager = new SqliteManager(context);
         c = Calendar.getInstance();
         this.pickTime.setOnClickListener(view -> TimePicker());
@@ -199,7 +200,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
     }
 
-    //TODO: checa la hora y el tiempo designado que no sean vacios
+    //TODO: checa la hora y el tiempo designado que no sean vacios y devuelve un boleano que representa un error
     private boolean checkTimeAndDesigned(){
         if(designed.equals("empty") || hourSet == -1 ){
             if(designed.equals("empty")){
@@ -212,6 +213,19 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         }else{
             return false;
         }
+    }
+
+    //TODO: setea la vista en DarkMode
+    private void setDarkMode(){
+        SetDarkMode darkMode = new SetDarkMode(context, this);
+        ArrayList<TextView> views = new ArrayList<>();
+        views.add(0, showDesigned);
+        views.add(1,showTime);
+        darkMode.setDarkModeTextViews(views);
+        ArrayList<EditText> editTexts = new ArrayList<>();
+        editTexts.add(0,title);
+        editTexts.add(1,description);
+        darkMode.setDarkModeEditText(editTexts);
     }
 
     //TODO: Metodos sobre escritos por las clases

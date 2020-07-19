@@ -17,7 +17,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +30,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.Mc256Design.mistareasdeldia.MainActivity;
@@ -38,6 +43,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 import com.Mc256Design.mistareasdeldia.ClassRequired.popUpUserShow;
 
@@ -47,6 +53,7 @@ public class activityEditUser extends AppCompatActivity implements NavigationVie
     EditText newNameInput;
     Button openGallery, editUser;
     ImageView newDataImage, newImageUser;
+    TextView title, subTitle;
     //TODO: instancia de clase
     SqliteManager sqliteManager;
     ProgressDialog progressDialog;
@@ -74,11 +81,14 @@ public class activityEditUser extends AppCompatActivity implements NavigationVie
     private void initialElements() {
         this.newNameInput = this.findViewById(R.id.editUserInputNewName);
         this.openGallery = this.findViewById(R.id.editUserSelectNewImage);
+        this.title = this.findViewById(R.id.titleEditUser);
+        this.subTitle = this.findViewById(R.id.subTitleEditUser);
         this.editUser = this.findViewById(R.id.editUserEdit);
         this.newDataImage = this.findViewById(R.id.editUserNewDataImage);
         this.newImageUser = this.findViewById(R.id.editUserShowNewImage);
         this.newDataImage.setVisibility(View.INVISIBLE);
         sqliteManager = new SqliteManager(context);
+        setDarkMode();
         this.nav = new NavDrawerImplementation(context, this, activityEditUser.this, R.id.nav_menu_edit);
         darkMode = new SetDarkMode(context, this);
         this.progressDialog = new ProgressDialog(context);
@@ -119,7 +129,6 @@ public class activityEditUser extends AppCompatActivity implements NavigationVie
         Objects.requireNonNull(progressDialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
         async a = new async();
         a.execute();
-
 
     }
 
@@ -181,6 +190,24 @@ public class activityEditUser extends AppCompatActivity implements NavigationVie
             user = c.getString(1);
         }
         new popUpUserShow(context, rdUserIMagen, user);
+    }
+
+    private void setDarkMode(){
+        SetDarkMode darkMode = new SetDarkMode(context, activityEditUser.this);
+        ArrayList<EditText> editTexts = new ArrayList<>();
+        editTexts.add(newNameInput);
+        ArrayList<TextView> views = new ArrayList<>();
+        views.add(title);
+        views.add(subTitle);
+        darkMode.setDarkModeEditText(editTexts);
+        darkMode.setDarkModeTextViews(views);
+        Drawable drawable = newImageUser.getDrawable();
+        if (darkMode.isEnabledDarkMode){
+            ColorFilter color = new LightingColorFilter(Color.rgb(255,255,255), Color.rgb(255,255,255));
+            drawable.setColorFilter(color);
+            newImageUser.setImageDrawable(drawable);
+        }
+
     }
 
     //TODO: metodos sobre escritos por el sistema
