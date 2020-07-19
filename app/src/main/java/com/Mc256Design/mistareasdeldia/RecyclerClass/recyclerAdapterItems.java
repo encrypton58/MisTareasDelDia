@@ -64,7 +64,6 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             final ImageButton opcionesTarea = itemView.findViewById(R.id.opcionesItems);
 
             idView.setVisibility(View.INVISIBLE);
-            positionView.setVisibility(View.INVISIBLE);
 
             Drawable dview = itemView.getContext().getDrawable(R.drawable.item_view_borde_color);
             Drawable dboton = itemView.getContext().getDrawable(R.drawable.item_view_backgroud_icons);

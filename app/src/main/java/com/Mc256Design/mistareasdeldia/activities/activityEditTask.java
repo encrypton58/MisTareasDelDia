@@ -4,13 +4,16 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.Mc256Design.mistareasdeldia.ClassRequired.DialogDesignedTime;
 import com.Mc256Design.mistareasdeldia.ClassRequired.SimpleAlertDialog;
@@ -73,9 +76,15 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
         this.typeDesigned = this.findViewById(R.id.typeDesignadoEditarTarea2);
         this.typeDate = this.findViewById(R.id.typeFechaEditarTarea);
         this.typeHour = this.findViewById(R.id.typeHoraEditarTarea2);
+        Toolbar bar = this.findViewById(R.id.toolbarEdiTask);
+        this.setSupportActionBar(bar);
+        bar.setNavigationOnClickListener((push) ->{
+            startActivity(new Intent(context,MainActivity.class));
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
+                });
         this.setDarkMode();
         cal = Calendar.getInstance();
-        this.showTitle.setText(datos.getString("titulo"));
+        this.showTitle.setText(datos.getString("titulo") + " id = " + datos.getInt("id_tarea"));
         this.showDescription.setText(datos.getString("des"));
         this.showHour.setText(datos.getInt("hora") + ":" + datos.getInt("minuto"));
         this.showDate.setText(datos.getString("designado"));
@@ -85,7 +94,7 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
 
         this.newSetTime.setOnClickListener((push) -> {
             timePick();
-            Toast.makeText(context, "Time seleccionado", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Time seleccionado", Toast.LENGTH_SHORT).show();
 
         });
 
@@ -112,6 +121,12 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
 
     private void timePick(){
 
+        Cursor c = sqliteManager.queryAllRegistersTareas();
+        Toast.makeText(context, "Count = " + c.getCount(), Toast.LENGTH_SHORT).show();
+        int pos = datos.getInt("position") + 1;
+        if(c.moveToPosition(pos)){
+            Toast.makeText(context, "Hay un registro despues y se llama " + c.getString(1), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void SetTomorrowTask(int hour, int minute, int hourSystem, int minuteSystem){
@@ -242,15 +257,4 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
 
     //lol perro jaja azxies
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
-    }
 }

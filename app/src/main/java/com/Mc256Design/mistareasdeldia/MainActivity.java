@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int random = (int) (Math.random() * 50 + 1);
         Data data = saveData(titulo,descripcion, random, tiempoDesignado);
         WorkManager.saveNoti(alertTime, data, tag);
-        Toast.makeText(getApplicationContext(), alertTime + " milis , hourOfdataDase " + hora + ":" + minuto , Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), alertTime + " milis , hourOfdataDase " + hora + ":" + minuto , Toast.LENGTH_SHORT).show();
 
     }
 
@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String des_tarea = getTareas().get(viewHolder.getAdapterPosition()).getDescripcion();
                 String designado_tarea = getTareas().get(viewHolder.getAdapterPosition()).getHorasDesignadas();
                 String fecha_tarea = getTareas().get(viewHolder.getAdapterPosition()).getFecha();
+                int pos = position;
                 deleteWorkManagerFromTask(String.valueOf(id_tarea));
                 Intent i = new Intent(context, activityEditTask.class);
                 i.putExtra("id_tarea", id_tarea);
@@ -332,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 i.putExtra("des", des_tarea);
                 i.putExtra("fecha", fecha_tarea);
                 i.putExtra("designado", designado_tarea);
+                i.putExtra("position", pos);
                 if(TimerService.instancia != null){
                     new TimerService().stopBecauseDeleteTask(context);
                 }
@@ -348,9 +350,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(this.ImplementsNavegationDrawer.getDrawerLayout().isDrawerOpen(GravityCompat.START)){
             ImplementsNavegationDrawer.getDrawerLayout().closeDrawer(GravityCompat.START);
         }else{
-            super.onBackPressed();
             finish();
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
     }
 
     //TODO: fina lde los metodos sobre escritos
