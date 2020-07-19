@@ -1,16 +1,17 @@
 package com.Mc256Design.mistareasdeldia.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.Mc256Design.mistareasdeldia.ClassRequired.DialogDesignedTime;
 import com.Mc256Design.mistareasdeldia.ClassRequired.SimpleAlertDialog;
 import com.Mc256Design.mistareasdeldia.MainActivity;
@@ -229,7 +230,7 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
         hour = hourOfDay;
        this.minute = minute;
        CharSequence texto = "La nueva hora es: " + hour + ":" + this.minute;
-       showHour.setText(texto);
+        showHour.setText(texto);
     }
 
     @Override
@@ -238,6 +239,8 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
         CharSequence charSequence = "El tiempo designado es: " + designed + "mins.";
         showDesigned.setText(charSequence);
     }
+
+    //lol perro jaja azxies
 
     @Override
     public void onBackPressed() {
