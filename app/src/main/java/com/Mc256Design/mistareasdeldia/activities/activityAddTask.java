@@ -3,7 +3,6 @@ package com.Mc256Design.mistareasdeldia.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import android.content.Context;
@@ -19,17 +18,16 @@ import com.Mc256Design.mistareasdeldia.ClassRequired.SimpleAlertDialog;
 import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
-
+import com.wdullaer.materialdatetimepicker.time.Timepoint;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Set;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
 , TimePickerDialog.OnTimeSetListener{
 
     //TODO: widgets
     EditText title, description;
-    TextView showTime, showDesigned;
+    TextView showTime, showDesigned, titleAddTask;
     Button pickTime, pickDesigned, addTask;
     //TODO: context
     Context context;
@@ -59,6 +57,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     private void initialElements(){
         this.title = this.findViewById(R.id.addTaskTitle);
         this.description = this.findViewById(R.id.addTaskDescription);
+        this.titleAddTask = this.findViewById(R.id.title2);
         this.showTime = this.findViewById(R.id.addTaskShowTime);
         this.showDesigned = this.findViewById(R.id.addTaskshowDesigned);
         this.pickTime = this.findViewById(R.id.addTaskPickTime);
@@ -83,7 +82,6 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
                 }
             }
         });
-
     }
 
     //TODO: escoje la hora a la cual iniciara la tarea
@@ -91,33 +89,16 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     private void TimePicker(){
 
         Calendar cal = Calendar.getInstance();
-
          hourSystem = cal.get(Calendar.HOUR_OF_DAY);
          minuteSystem = cal.get(Calendar.MINUTE);
 
 
-        Cursor c = sqliteManager.queryAllRegistersTareas();
-         if(c.moveToLast()){
-             int hora = c.getInt(2);
-             int minuto = c.getInt(3);
-             int designado = Integer.parseInt(c.getString(6));
-
-             minuto = minuto + designado;
-
-             if (minuto >= 60){
-                 hora += 1;
-                 minuto = minuto - 60;
-             }
-
-             TimePickerDialog tp = TimePickerDialog.newInstance(activityAddTask.this,hora, minuto,false);
-             tp.setMinTime(hora, minuto, 0);
-             tp.show(getSupportFragmentManager(), "Restringido");
-
-         }else{
-             TimePickerDialog tp = TimePickerDialog.newInstance(activityAddTask.this, hourSystem, minuteSystem, false);
-             tp.show(getSupportFragmentManager(),"Chido ");
-         }
-
+        TimePickerDialog picker = TimePickerDialog.newInstance(activityAddTask.this, hourSystem, minuteSystem, false);
+        Timepoint[] times = generateTimePoints();
+        if(times != null){
+            picker.setDisabledTimes(times);
+        }
+        picker.show(this.getSupportFragmentManager(), "picker");
 
 
     }
@@ -228,6 +209,60 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         darkMode.setDarkModeEditText(editTexts);
     }
 
+    //TODO: genera los timePoints que obtiene de las tareas obtenidas
+    private Timepoint[] generateTimePoints(){
+        Cursor c = sqliteManager.queryAllRegistersTareas();
+
+        if(c.getCount() >= 1){
+            int[] horas = new int[c.getCount()];
+            int[] minutos = new int[c.getCount()];
+            int[] designados = new int[c.getCount()];
+
+            if(c.moveToFirst()){
+                horas[0] = c.getInt(2);
+                minutos[0] = c.getInt(3);
+                designados[0] = Integer.parseInt(c.getString(6));
+            }
+            for (int i = 1; c.moveToNext(); i++){
+                horas[i] = c.getInt(2);
+                minutos[i] = c.getInt(3);
+                designados[i] = Integer.parseInt(c.getString(6));
+            }
+            int sumaDesignados = 0;
+            for(int k = 0; k <= designados.length - 1; k++){
+                sumaDesignados = sumaDesignados + designados[k];
+            }
+            Timepoint[] times = new Timepoint[sumaDesignados + c.getCount()];
+            int indexPosition = 0;
+            int index = 0;
+            int indexTimes = 0;
+            int minutosValue = -1;
+
+            while(indexTimes != times.length){
+                if(indexPosition <= horas.length - 1){
+                    while(minutosValue != minutos[indexPosition] + designados[indexPosition]){
+                        if(minutosValue == -1 || index != indexPosition){
+                            minutosValue = minutos[indexPosition];
+                            times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue);
+                            minutosValue++;
+                            index = indexPosition;
+                        }else{
+                            times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue++);
+                        }
+                        indexTimes++;
+                    }
+                    index = indexPosition;
+                    indexPosition++;
+                }
+            }
+            return times;
+        }else{
+            return null;
+        }
+
+
+    }
+
     //TODO: Metodos sobre escritos por las clases
 
     @SuppressLint("SetTextI18n")
@@ -236,7 +271,6 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         this.designed = time;
         this.showDesigned.setText("tiempo designado: " + this.designed + "mins");
     }
-
 
     @SuppressLint("SetTextI18n")
     @Override
