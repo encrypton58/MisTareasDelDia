@@ -32,7 +32,6 @@
             android:layout_marginEnd="0dp"
             android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
             app:navigationIcon="@drawable/nav_drawable_open_icon" />
 
         <View
@@ -144,34 +143,17 @@
                     app:srcCompat="@drawable/main_add_button" />
 
 
-                <TextView
-                    android:id="@+id/mainNoWorksText"
-                    android:layout_width="275dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="54dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="56dp"
-                    android:gravity="center_horizontal"
-                    android:text="Hellou perra"
-                    android:textColor="#000"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mainRecyclerTarea"
-                    android:layout_width="wrap_content"
-                    android:layout_height="509dp"
+                    android:layout_width="400dp"
+                    android:layout_height="531dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginStart="3dp"
-                    android:layout_marginTop="43dp"
-                    android:layout_marginEnd="0dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="2dp" />
 
             </RelativeLayout>

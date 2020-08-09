@@ -19,7 +19,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,6 +40,9 @@ import com.Mc256Design.mistareasdeldia.service.TimerService;
 import com.Mc256Design.mistareasdeldia.service.WorkManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
           swipeTasks.recyclerItemTouchHelperListener{
 
     //TODO: widgets
-    TextView showDia, showUser, showNoTask;
+    TextView showDia, showUser;
     FloatingActionButton addTaskButton;
     RecyclerView recyclerShowTask;
     ImageView showUserImage;
@@ -78,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.recyclerShowTask = this.findViewById(R.id.mainRecyclerTarea);
         this.refreshLayout = this.findViewById(R.id.swipeRefresLayout);
         this.showUserImage = this.findViewById(R.id.mainShowImageUser);
-        this.showNoTask = this.findViewById(R.id.mainNoWorksText);
         setDarkMode();
         this.ImplementsNavegationDrawer = new NavDrawerImplementation(context, this, MainActivity.this, R.id.nav_menu_home);
         sqliteManager = new SqliteManager(context);
@@ -87,6 +92,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             this.recyclerShowTask.setLayoutManager(new LinearLayoutManager(this));
             adapterItems = new recyclerAdapterItems(getTareas(), MainActivity.this);
             recyclerShowTask.setAdapter(adapterItems);
+            if (task != null && task.size() > 0) {
+                for (int i = 0; i <= task.size() - 1; i++) {
+                    checkDataBase(task.get(i).getId(), task.get(i).getTitulo(), task.get(i).getHora(),
+                            task.get(i).getMinuto(), task.get(i).getDescripcion(), task.get(i).getHorasDesignadas(), task.get(i).getFecha());
+                }
+            }
             ItemTouchHelper.SimpleCallback simpleCallback =
                     new swipeTasks(0, ItemTouchHelper.LEFT, MainActivity.this, context);
 
@@ -126,11 +137,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //showAlert("Se ha Añadido El usuario :D", "Se ha añadido correctamente el usuario " + user);
             }
             showUser.setText(userName);
-            byte[] image = c.getBlob(2);
-            Bitmap convertImage = BitmapFactory.decodeByteArray(image, 0 ,image.length);
-            RoundedBitmapDrawable rdUserIMagen = RoundedBitmapDrawableFactory.create(getResources(), convertImage);
-            rdUserIMagen.setCornerRadius(convertImage.getHeight() * convertImage.getWidth());
-            showUserImage.setImageDrawable(rdUserIMagen);
+
+            try {
+                Bitmap imageUser =
+                        MediaStore.Images.Media.getBitmap(context.getContentResolver(),Uri.fromFile(new File(c.getString(2))));
+                RoundedBitmapDrawable rdImage = RoundedBitmapDrawableFactory.create(context.getResources(), imageUser);
+                rdImage.setCornerRadius(imageUser.getHeight() * imageUser.getWidth());
+                showUserImage.setImageDrawable(rdImage);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
             return true;
         }else{
             AlertDialog.Builder build = new AlertDialog.Builder(context);
@@ -196,24 +213,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         c = sqliteManager.queryAllRegistersTareas();
         if (c.moveToFirst()) {
+
+            recyclerShowTask.setBackground(null);
+
             task.add(new tarea(c.getInt(0), c.getString(1),c.getInt(2), c.getInt(3), c.getString(4)
                     ,c.getString(5), c.getString(6)));
-
-            //TODO: uso del metodo checkData base
-            checkDataBase(c.getInt(0), c.getString(1), c.getInt(2),
-                    c.getInt(3), c.getString(4), c.getString(6), c.getString(5));
-            showNoTask.setVisibility(View.INVISIBLE);
 
             while (c.moveToNext()) {
                 task.add(new tarea(c.getInt(0), c.getString(1),c.getInt(2), c.getInt(3), c.getString(4)
                         ,c.getString(5), c.getString(6) ));
-                //TODO: uso del metodo checkData base
-                checkDataBase(c.getInt(0), c.getString(1), c.getInt(2),
-                        c.getInt(3), c.getString(4), c.getString(6), c.getString(5));
             }
-        } else {
-            Toast.makeText(context, "No hay Registros", Toast.LENGTH_SHORT).show();
-            showNoTask.setVisibility(View.VISIBLE);
+        }else{
+            Toast.makeText(context, "No hay registro", Toast.LENGTH_SHORT).show();
         }
 
         return task;
@@ -285,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetDarkMode darkMode = new SetDarkMode(context, this);
         ArrayList<TextView> views = new ArrayList<>();
         views.add(showDia);
-        views.add(showNoTask);
         views.add(showUser);
         darkMode.setDarkModeTextViews(views);
     }
@@ -323,7 +333,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String des_tarea = getTareas().get(viewHolder.getAdapterPosition()).getDescripcion();
                 String designado_tarea = getTareas().get(viewHolder.getAdapterPosition()).getHorasDesignadas();
                 String fecha_tarea = getTareas().get(viewHolder.getAdapterPosition()).getFecha();
-                int pos = position;
                 deleteWorkManagerFromTask(String.valueOf(id_tarea));
                 Intent i = new Intent(context, activityEditTask.class);
                 i.putExtra("id_tarea", id_tarea);
@@ -333,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 i.putExtra("des", des_tarea);
                 i.putExtra("fecha", fecha_tarea);
                 i.putExtra("designado", designado_tarea);
-                i.putExtra("position", pos);
+                i.putExtra("position", position);
                 if(TimerService.instancia != null){
                     new TimerService().stopBecauseDeleteTask(context);
                 }

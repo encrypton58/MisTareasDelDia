@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -17,7 +18,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.Mc256Design.mistareasdeldia.R;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class SetDarkMode{
@@ -39,6 +43,7 @@ public class SetDarkMode{
     ColorStateList colorWhenIsNoEnabled = ColorStateList.valueOf(colorBlack);
     //TODO: boleans
     public boolean isEnabledDarkMode;
+    private ArrayList<TextInputLayout> layoutArrayList;
 
     public SetDarkMode(Context context, AppCompatActivity app){
         this.context = context;
@@ -150,6 +155,17 @@ public class SetDarkMode{
         }else {
             layout.setBackground(app.getDrawable(R.drawable.item_view_background));
         }
+    }
+
+    public void setDarkModeNavegationBar(Window w){
+        if(isEnabledDarkMode){
+            w.setNavigationBarColor(colorBlack);
+            w.setStatusBarColor(colorBlack);
+        }else{
+            w.setNavigationBarColor(colorWhite);
+            w.setStatusBarColor(Color.parseColor("#00B398"));
+        }
+
     }
 
 }

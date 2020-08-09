@@ -3,11 +3,12 @@ package com.Mc256Design.mistareasdeldia.navDrawerControl;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,9 @@ import com.Mc256Design.mistareasdeldia.activities.activityOptions;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.File;
+import java.io.IOException;
+
 public class NavDrawerImplementation implements NavigationView.OnNavigationItemSelectedListener{
 
     DrawerLayout drawerLayout;
@@ -45,6 +49,7 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
         this.context = context;
         this.app = app;
         this.idItemSelect = id;
+        darkMode = new SetDarkMode(context, this.app);
         this.drawerLayout = app.findViewById(R.id.globalDrawerLayout);
         this.navigationView = app.findViewById(R.id.global_navegationView);
         Toolbar toolbar = app.findViewById(R.id.globalToolbar);
@@ -55,10 +60,16 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         this.menu = this.navigationView.getMenu();
+        darkMode.setDarkModeNavegationBar(app.getWindow());
+        if(darkMode.isEnabledDarkMode){
+            toolbar.setTitleTextColor(Color.rgb(255,255,255));
+            toolbar.setNavigationIcon(R.drawable.nav_drawable_open_icon);
+        }else{
+            toolbar.setTitleTextColor(Color.rgb(0,0,0));
+        }
         this.navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) context);
         this.navigationView.setCheckedItem(this.idItemSelect);
 
-        darkMode = new SetDarkMode(context, this.app);
         this.navigationView.setBackgroundDrawable(darkMode.setNavegationDrawer(this.navigationView));
 
         View headView = navigationView.getHeaderView(0);
@@ -67,14 +78,19 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
         Cursor cursor = sqliteManager.queryAllRegistersUsers();
 
         if(cursor.moveToFirst()){
-            byte[] image = cursor.getBlob(2);
-            Bitmap convertImage = BitmapFactory.decodeByteArray(image, 0 ,image.length);
-            RoundedBitmapDrawable rdUserImagen = RoundedBitmapDrawableFactory.create(context.getResources(), convertImage);
-            rdUserImagen.setCornerRadius(convertImage.getHeight() * convertImage.getWidth());
-            ImageView imageProfile = headView.findViewById(R.id.image_user_nav);
-            TextView nameProfile = headView.findViewById(R.id.name_user_nav);
-            imageProfile.setImageDrawable(rdUserImagen);
-            nameProfile.setText(cursor.getString(1));
+
+            try {
+                Bitmap conver =
+                        MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.fromFile(new File(cursor.getString(2))));
+                RoundedBitmapDrawable rdUserImagen = RoundedBitmapDrawableFactory.create(context.getResources(), conver);
+                rdUserImagen.setCornerRadius(conver.getHeight() * conver.getWidth());
+                ImageView imageProfile = headView.findViewById(R.id.image_user_nav);
+                TextView nameProfile = headView.findViewById(R.id.name_user_nav);
+                imageProfile.setImageDrawable(rdUserImagen);
+                nameProfile.setText(cursor.getString(1));
+            } catch (IOException e) {
+                Toast.makeText(context, "Error al cargar imagen", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }

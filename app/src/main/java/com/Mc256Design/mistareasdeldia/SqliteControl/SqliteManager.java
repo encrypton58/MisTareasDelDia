@@ -21,24 +21,24 @@ public class SqliteManager extends SQLiteOpenHelper {
     }
 
     // TODO: manejo de la tabla de datos de usuarios
-    public void  insertDataUsuarios(String name, byte[] image){
+    public void  insertDataUsuarios(String name, String url){
         SQLiteDatabase db = this.getWritableDatabase();
         String insert =  "INSERT INTO "+ TABLANAMEUSERS + "(id,nombre,image) VALUES(NULL,?,?)";
         SQLiteStatement statement = db.compileStatement(insert);
         statement.clearBindings();
 
         statement.bindString(1,name);
-        statement.bindBlob(2,image);
+        statement.bindString(2,url);
         statement.executeInsert();
     }
-    public void updateDataUsers(String name ,byte[] image){
+    public void updateDataUsers(String name ,String url){
 
         SQLiteDatabase db = this.getWritableDatabase();
         String update = "UPDATE " + TABLANAMEUSERS + " SET nombre = ? , image = ? WHERE id = 1";
         SQLiteStatement statement = db.compileStatement(update);
         statement.clearBindings();
         statement.bindString(1,name);
-        statement.bindBlob(2,image);
+        statement.bindString(2,url);
         statement.executeInsert();
     }
 
@@ -120,7 +120,7 @@ public class SqliteManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE_USERS = "CREATE TABLE " + TABLANAMEUSERS + " (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, image BLOG)";
+        String CREATE_TABLE_USERS = "CREATE TABLE " + TABLANAMEUSERS + " (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, image TEXT)";
         db.execSQL(CREATE_TABLE_USERS);
 
         String CREATE_TABLE_TAREAS =  "CREATE TABLE " + TABLANAMETAREAS + " (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT," +

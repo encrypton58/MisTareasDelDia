@@ -18,6 +18,7 @@ import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
+import com.google.android.material.textfield.TextInputLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
 import java.util.ArrayList;
@@ -45,9 +46,7 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
     Calendar cal;
     //TODO: booleans
     boolean isSetTomorrow = false;
-    //TODO: arrays
-    int[] horasComprobacion;
-    int[] minutosComprobacion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +151,12 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
 
             }
 
+            if(horas == null){
+                horas = new int[0];
+                minutos = new int[0];
+                designados = new int[0];
+            }
+
             if(c.moveToFirst() && position != 0){
                 horas[0] = c.getInt(2);
                 minutos[0] = c.getInt(3);
@@ -170,8 +175,6 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
                 sumaDesignados = sumaDesignados + designados[k];
             }
             Timepoint[] times = new Timepoint[sumaDesignados];
-            horasComprobacion = new int[sumaDesignados];
-            minutosComprobacion = new int[sumaDesignados];
             int indexPosition = 0;
             int index = 0;
             int indexTimes = 0;
@@ -183,8 +186,6 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
                         if(minutosValue == -1 || index != indexPosition){
                             minutosValue = minutos[indexPosition];
                             times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue);
-                            horasComprobacion[indexTimes] = horas[indexPosition];
-                            minutosComprobacion[indexPosition] = minutosValue;
                             minutosValue++;
                             index = indexPosition;
                         }else{
@@ -329,20 +330,27 @@ public class activityEditTask extends AppCompatActivity implements TimePickerDia
         designed = time;
         CharSequence charSequence = "El tiempo designado es: " + designed + "mins.";
         showDesigned.setText(charSequence);
-        int[] suma = new int[minute + Integer.parseInt(designed)];
-        int index = 0;
-        int horaComp = hour;
-        while(suma[index] != minute + Integer.parseInt(designed)){
-            suma[index] = minute++;
-            index++;
 
-        }
+        Timepoint[] times = generateTimePoints(datos.getInt("position"));
+        int indexTimes = 0;
+        int minDes = minute + Integer.parseInt(designed);
+        int minuteValues = -1;
 
-        for (int i = 0; i != horasComprobacion.length - 1; i++){
-            if( horaComp == horasComprobacion[i] && 0 == minutosComprobacion[i] ){
-                new SimpleAlertDialog(context,"Error", "No se puede Colocar el tiempo des");
+        while(indexTimes <= times.length - 1){
+            if(minuteValues == -1){
+                minuteValues = minute;
+            }
+            int getMinuteTimes = times[indexTimes].getMinute();
+            int getHourTimes = times[indexTimes].getHour();
+            if (minuteValues == getMinuteTimes & hour == getHourTimes || minuteValues == getMinuteTimes - 1 & hour == getHourTimes){
+                new SimpleAlertDialog(context, "Se cumple una vez","Se cumple la condicion dada").show();
+                break;
+            }else{
+                indexTimes++;
+                minuteValues++;
             }
         }
+
 
     }
 

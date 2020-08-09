@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
+import com.google.android.material.textfield.TextInputLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,13 +23,14 @@ import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
 , TimePickerDialog.OnTimeSetListener{
 
     //TODO: widgets
-    EditText title, description;
     TextView showTime, showDesigned, titleAddTask;
+    TextInputLayout layoutTitle, layoutDescription;
     Button pickTime, pickDesigned, addTask;
     //TODO: context
     Context context;
@@ -55,9 +58,9 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
     //TODO: inicia todos los componetes de la UI
     private void initialElements(){
-        this.title = this.findViewById(R.id.addTaskTitle);
-        this.description = this.findViewById(R.id.addTaskDescription);
-        this.titleAddTask = this.findViewById(R.id.title2);
+        this.titleAddTask = this.findViewById(R.id.addTasktTtle);
+        this.layoutTitle = this.findViewById(R.id.addTaskLayoutTitle);
+        this.layoutDescription = this.findViewById(R.id.addTaskLayoutDescription);
         this.showTime = this.findViewById(R.id.addTaskShowTime);
         this.showDesigned = this.findViewById(R.id.addTaskshowDesigned);
         this.pickTime = this.findViewById(R.id.addTaskPickTime);
@@ -164,18 +167,20 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
     //TODO: checa los inputs y devuelbe un booleano segun su estado
     private boolean checkInputsNoEmpty(){
-        if(this.title.getText().toString().isEmpty() || this.description.getText().toString().isEmpty()){
-            if (this.title.getText().toString().isEmpty()){
-                new SimpleAlertDialog(context,"Error de entrada","No puedes dejar vacio el titulo");
+
+        if(Objects.requireNonNull(this.layoutTitle.getEditText()).getText().toString().isEmpty()
+                || Objects.requireNonNull(this.layoutDescription.getEditText()).getText().toString().isEmpty()){
+            if (this.layoutTitle.getEditText().getText().toString().isEmpty()){
+                this.layoutTitle.setError("No puedes dejar vacio el titulo");
             }
-            if(this.description.getText().toString().isEmpty()){
-                new SimpleAlertDialog(context,"Error de entrada","No puedes dejar Vacio la descripcion");
+            if(Objects.requireNonNull(this.layoutDescription.getEditText()).getText().toString().isEmpty()){
+                this.layoutDescription.setError("No puedes dejar Vacio la descripcion");
             }
             return true;
 
         }else{
-            this.titleStrign = this.title.getText().toString();
-            this.descriptionStrign = description.getText().toString();
+            this.titleStrign = this.layoutTitle.getEditText().getText().toString();
+            this.descriptionStrign = this.layoutDescription.getEditText().getText().toString();
             return false;
         }
 
@@ -203,10 +208,6 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         views.add(0, showDesigned);
         views.add(1,showTime);
         darkMode.setDarkModeTextViews(views);
-        ArrayList<EditText> editTexts = new ArrayList<>();
-        editTexts.add(0,title);
-        editTexts.add(1,description);
-        darkMode.setDarkModeEditText(editTexts);
     }
 
     //TODO: genera los timePoints que obtiene de las tareas obtenidas
@@ -221,18 +222,18 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
             if(c.moveToFirst()){
                 horas[0] = c.getInt(2);
                 minutos[0] = c.getInt(3);
-                designados[0] = Integer.parseInt(c.getString(6));
+                designados[0] = Integer.parseInt(c.getString(6)) + 1;
             }
             for (int i = 1; c.moveToNext(); i++){
                 horas[i] = c.getInt(2);
                 minutos[i] = c.getInt(3);
-                designados[i] = Integer.parseInt(c.getString(6));
+                designados[i] = Integer.parseInt(c.getString(6)) + 1;
             }
             int sumaDesignados = 0;
             for(int k = 0; k <= designados.length - 1; k++){
                 sumaDesignados = sumaDesignados + designados[k];
             }
-            Timepoint[] times = new Timepoint[sumaDesignados + c.getCount()];
+            Timepoint[] times = new Timepoint[sumaDesignados];
             int indexPosition = 0;
             int index = 0;
             int indexTimes = 0;
@@ -244,12 +245,12 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
                         if(minutosValue == -1 || index != indexPosition){
                             minutosValue = minutos[indexPosition];
                             times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue);
-                            minutosValue++;
                             index = indexPosition;
                         }else{
-                            times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue++);
+                            times[indexTimes] = new Timepoint(horas[indexPosition], minutosValue);
                         }
                         indexTimes++;
+                        minutosValue++;
                     }
                     index = indexPosition;
                     indexPosition++;

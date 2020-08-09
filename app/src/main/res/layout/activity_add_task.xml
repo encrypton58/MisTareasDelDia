@@ -7,46 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.activityAddTask">
 
-    <EditText
-        android:id="@+id/addTaskTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_above="@+id/addTaskPickTime"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="47dp"
-        android:layout_marginBottom="15dp"
-        android:autofillHints="@string/navResourceClose"
-        android:ems="10"
-        android:hint="añade un titulo para la tarea"
-        android:inputType="textPersonName"
-        android:textColor="@color/moreWhite"
-        android:textColorHint="@color/moreWhite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/addTaskDescription"
-        android:layout_width="335dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/addTaskshowDesigned"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="28dp"
-        android:autofillHints="@string/navResourceClose"
-        android:ems="10"
-        android:hint="añade una descripcion"
-        android:inputType="textPersonName"
-        android:textColor="@color/negro"
-        android:textColorHint="@color/moreWhite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskShowTime" />
 
     <Button
         android:id="@+id/addTaskAdd"
@@ -83,24 +44,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.329"
         app:layout_constraintStart_toEndOf="@+id/addTaskshowDesigned"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/addTaskLayoutDescription" />
 
     <Button
         android:id="@+id/addTaskPickTime"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/addTaskDescription"
+        android:layout_above="@+id/addTaskLayoutDescription"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="59dp"
+        android:layout_marginBottom="19dp"
         android:background="@color/colorAccent"
         android:text="Hora"
         android:textColor="@color/moreWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.442"
-        app:layout_constraintStart_toEndOf="@+id/addTaskShowTime"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskTitle" />
+        app:layout_constraintStart_toEndOf="@+id/addTaskShowTime" />
 
     <TextView
         android:id="@+id/addTaskshowDesigned"
@@ -115,7 +75,7 @@
         android:textColor="@color/negro"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskDescription" />
+        app:layout_constraintTop_toBottomOf="@+id/addTaskLayoutDescription" />
 
     <TextView
         android:id="@+id/addTaskShowTime"
@@ -123,13 +83,12 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/addTaskshowDesigned"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="47dp"
+        android:layout_marginStart="62dp"
         android:layout_marginTop="36dp"
-        android:layout_marginBottom="118dp"
+        android:layout_marginBottom="135dp"
         android:text="selecciona una hora"
         android:textColor="@color/negro"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskTitle" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <View
         android:id="@+id/view"
@@ -147,26 +106,86 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/title2"
-        android:layout_width="wrap_content"
+        android:id="@+id/addTasktTtle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/view"
-        android:layout_alignBottom="@+id/view"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="34dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginBottom="36dp"
-        android:gravity="center"
-        android:text="añade una tarea a la lista"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="101dp"
+        android:gravity="center_horizontal"
+        android:text="Escribe tu nombre"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/addTaskSubTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/view"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal"
+        android:text="y añade una imagen de usuario"
+        android:textColor="@color/whiteClaro"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/addTaskLayoutTitle"
+        android:layout_width="337dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskPickTime"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="41dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="5dp"
+        android:hint="añade un titulo para la tarea"
+        android:textColorHint="@color/colorPrimaryDark"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:textColor="@color/morado"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/addTaskLayoutDescription"
+        android:layout_width="337dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addTaskPickDesigned"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="35dp"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/colorPrimaryDark"
+        android:hint="añade una descripcion"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="10dp"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/morado"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 
 </RelativeLayout>
