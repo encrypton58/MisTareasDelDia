@@ -68,8 +68,18 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             Drawable dview = itemView.getContext().getDrawable(R.drawable.item_view_borde_color);
             Drawable dboton = itemView.getContext().getDrawable(R.drawable.item_view_backgroud_icons);
             int r = (int) (Math.random() * 255); int g = (int) (Math.random() * 255); int b = (int) (Math.random() * 255);
+
+            if(r > 200 && g > 200 && b > 200){
+                r = (int) (Math.random() * 255); g = (int) (Math.random() * 255); b = (int) (Math.random() * 255);
+            }
+
             int color1 = Color.rgb(r,g,b);
             int r2 = (int) (Math.random() * 255);  int g2  = (int) (Math.random() * 255); int b2 = (int) (Math.random() * 255);
+
+            if (r2 > 220 && g2 > 220 && b2 > 220){
+                r2 = (int) (Math.random() * 255);  g2  = (int) (Math.random() * 255); b2 = (int) (Math.random() * 255);
+            }
+
             int color2 = Color.rgb(r2,g2,b2);
             ColorFilter c = new LightingColorFilter(color1 , color2);
             Objects.requireNonNull(dview).setColorFilter(c);

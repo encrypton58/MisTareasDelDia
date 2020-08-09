@@ -11,6 +11,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.Worker;
@@ -60,7 +61,7 @@ public class WorkManager extends Worker {
 
         if(TimerService.instancia == null) {
             createNotification(title, details, id);
-            context.startService(in);
+            ContextCompat.startForegroundService(context,in);
         }
 
         return Result.success();

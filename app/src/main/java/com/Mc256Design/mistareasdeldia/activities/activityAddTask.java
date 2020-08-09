@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
-, TimePickerDialog.OnTimeSetListener{
+        , TimePickerDialog.OnTimeSetListener{
 
     //TODO: widgets
     TextView showTime, showDesigned, titleAddTask;
@@ -92,8 +92,8 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     private void TimePicker(){
 
         Calendar cal = Calendar.getInstance();
-         hourSystem = cal.get(Calendar.HOUR_OF_DAY);
-         minuteSystem = cal.get(Calendar.MINUTE);
+        hourSystem = cal.get(Calendar.HOUR_OF_DAY);
+        minuteSystem = cal.get(Calendar.MINUTE);
 
 
         TimePickerDialog picker = TimePickerDialog.newInstance(activityAddTask.this, hourSystem, minuteSystem, false);
@@ -208,6 +208,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         views.add(0, showDesigned);
         views.add(1,showTime);
         darkMode.setDarkModeTextViews(views);
+        darkMode.setDarkModeNavegationBar(getWindow());
     }
 
     //TODO: genera los timePoints que obtiene de las tareas obtenidas

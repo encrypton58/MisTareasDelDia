@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 
 public class SqliteManager extends SQLiteOpenHelper {
 
-    private static final String DATABASENAME = "SystemTask";
+    private static final String DATABASENAME = "SystemTasks";
 
     private static int version = 1;
 

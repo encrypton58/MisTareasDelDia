@@ -64,6 +64,7 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
         if(darkMode.isEnabledDarkMode){
             toolbar.setTitleTextColor(Color.rgb(255,255,255));
             toolbar.setNavigationIcon(R.drawable.nav_drawable_open_icon);
+            drawerLayout.setBackground(null);
         }else{
             toolbar.setTitleTextColor(Color.rgb(0,0,0));
         }

@@ -100,6 +100,7 @@ public class activityEditUser extends AppCompatActivity implements NavigationVie
         darkMode = new SetDarkMode(context, this);
         this.progressDialog = new ProgressDialog(context);
 
+
         SharedPreferences sp = getSharedPreferences("notShowMore", Context.MODE_PRIVATE);
         if(!sp.getBoolean("notMoreShowDialog", false)){
             initialMessage();

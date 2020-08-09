@@ -9,8 +9,9 @@
     <color name="whiteClaro">#f1f1f1</color>
     <color name="darkMode">#161A27</color>
     <color name="morado">#E80BE8</color>
-    <color name="cardBackgroundLigth">#f1f1f1</color>
+    <color name="cardBackgroundLigth">#FFF</color>
     <color name="cardBackgroundDark">#393535</color>
+    <color name="backgroundMainActivity">#f1f1f1</color>
 
 
 </resources>
