@@ -16,17 +16,20 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
 
+import static java.lang.Math.random;
+
 public class TimerService extends Service {
 
     private final static String TAG = "BroadcastService";
-    private final static String CHANNEL_ID = "NOTIFICACIONTIMER ";
-    private final static String CHANNEL_IDSOUND = "NOTIFICACIONSOUND";
+    public final static String CHANNEL_ID = "NOTIFICACIONTIMER";
+    public final static String CHANNEL_IDSOUND = "NOTIFICACIONSOUND";
 
     public static TimerService instancia = null;
 
@@ -44,6 +47,7 @@ public class TimerService extends Service {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
@@ -53,13 +57,24 @@ public class TimerService extends Service {
         final String title = datos.getString("title");
         final String details = datos.getString("details");
 
-        createNotificationChannel(CHANNEL_ID);
-        createNotificationChannel(CHANNEL_IDSOUND);
+        createNotificationChannel();
 
-        cdt = new CountDownClass(tiempo, 20*1000);
+
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                .setContentTitle("algo")
+                .setContentText("algo" + " ")
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .setSmallIcon(R.drawable.item_view_delete)
+                .build();
+
+        startForeground( (int) (random() * 120), notification);
+
+        cdt = new CountDownClass(tiempo, 1000, title, details);
         cdt.start();
 
-        return START_NOT_STICKY;
+
+
+        return START_STICKY;
     }
 
     @Override
@@ -73,7 +88,7 @@ public class TimerService extends Service {
     }
 
     public void stopBecauseDeleteTask(Context context){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_IDSOUND);
         builder.setSmallIcon(R.drawable.item_view_edit);
         builder.setContentTitle("Se ha detenido la tarea ");
         builder.setContentText("la tarea fallo exitosamente");
@@ -83,7 +98,7 @@ public class TimerService extends Service {
         builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
         builder.setDefaults(Notification.DEFAULT_SOUND);
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context.getApplicationContext());
-        notificationManagerCompat.notify((int) (Math.random() * 255), builder.build());
+        notificationManagerCompat.notify((int) (random() * 255), builder.build());
         onDestroy();
     }
 
@@ -93,12 +108,19 @@ public class TimerService extends Service {
         return null;
     }
 
-    private void createNotificationChannel(String id){
+    private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "Noticacion";
-            NotificationChannel notificationChannel = new NotificationChannel(id, name, NotificationManager.IMPORTANCE_LOW);
-            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(notificationChannel);
+
+                CharSequence NAMEOFSYSTEMNOTIFICATION= "NOTIFICATION SYSTEM";
+                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_IDSOUND,NAMEOFSYSTEMNOTIFICATION, NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.createNotificationChannel(notificationChannel);
+
+                CharSequence NAMETIMERSYSTENOTI = "NOTIFICATION TIMER SERVICE";
+                NotificationChannel notificationTimerFoureground = new NotificationChannel(CHANNEL_ID, NAMETIMERSYSTENOTI, NotificationManager.IMPORTANCE_LOW);
+                NotificationManager notificationManagerTimer = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManagerTimer.createNotificationChannel(notificationTimerFoureground);
+
         }
     }
 
@@ -111,7 +133,7 @@ public class TimerService extends Service {
         builder.setContentTitle(title);
         builder.setContentText(description);
         builder.setColor(Color.BLUE);
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setLights(Color.MAGENTA, 1000, 1000);
         builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
         builder.setSound(uri);
@@ -126,19 +148,25 @@ public class TimerService extends Service {
 
         String restTime;
 
-        public CountDownClass(long millisInFuture, long countDownInterval) {
+        String titleTaks, descriptionTask;
+
+
+        public CountDownClass(long millisInFuture, long countDownInterval, String title, String description) {
             super(millisInFuture, countDownInterval);
+            this.titleTaks = title;
+            this.descriptionTask = description;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onTick(long millisUntilFinished) {
 
 
             Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished / 10000);
 
-            Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+            /*            Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                        0, notificationIntent, 0);
+                        0, notificationIntent, 0);*/
 
             if( (millisUntilFinished / 60000) == 0){
                 restTime = millisUntilFinished / 1000 + " seg.";
@@ -164,22 +192,19 @@ public class TimerService extends Service {
             Log.i(TAG, "Timer finished");
             cdt.cancel();
             createNotification("has finalizado " + datos.getString("title"),
-                    "Se ha finalizado el tiempo designado", (int) (Math.random()*255));
+                    "Se ha finalizado el tiempo designado", (int) (random()*255));
             Cursor c = sql.querySpecialTareas(datos.getString("title"));
             if(c.moveToFirst()){
-                int id = c.getInt(0);
+            /*    int id = c.getInt(0);
                 String titulo = c.getString(1);
                 String hora = c.getInt(2) + ":" + c.getInt(3);
                 String des = c.getString(4);
                 String fecha = c.getString(5);
                 String designado = c.getString(6);
-                sql.insertDataCompleteTasks(id,titulo,hora,des,fecha,designado);
+                sql.insertDataCompleteTasks(id,titulo,hora,des,fecha,designado);*/
                 sql.deleteTareas(c.getInt(0));
                 MainActivity main  = new MainActivity();
                 main.deleteWorkManagerFromTask(String.valueOf(c.getInt(0)));
-                main.initialComponents();
-
-
             }
             stopForeground(true);
             stopSelf();
@@ -187,6 +212,5 @@ public class TimerService extends Service {
         }
 
     }
-
 
 }

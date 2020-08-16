@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +29,6 @@ import com.Mc256Design.mistareasdeldia.activities.activityEditUser;
 import com.Mc256Design.mistareasdeldia.activities.activityOptions;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
 import com.google.android.material.navigation.NavigationView;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -41,11 +40,9 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
     AppCompatActivity app;
     Menu menu;
     int idItemSelect;
-
     SetDarkMode darkMode;
 
     public NavDrawerImplementation(Context context, AppCompatActivity app, Activity activity, int id){
-
         this.context = context;
         this.app = app;
         this.idItemSelect = id;
@@ -77,7 +74,6 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
 
         SqliteManager sqliteManager = new SqliteManager(context);
         Cursor cursor = sqliteManager.queryAllRegistersUsers();
-
         if(cursor.moveToFirst()){
 
             try {
@@ -93,7 +89,6 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
                 Toast.makeText(context, "Error al cargar imagen", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
     //TODO: retorna el drawerlayout para su uso
@@ -145,4 +140,5 @@ public class NavDrawerImplementation implements NavigationView.OnNavigationItemS
 
         return true;
     }
+
 }

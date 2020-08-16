@@ -35,6 +35,7 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
         private View view;
         public ConstraintLayout layoutABorrar;
         public RelativeLayout borrarEditar, parentLayout;
+        public TextView finalTimeOfTask;
         ImageView editarIcon, borrarIcon;
         String titulo,descipcion ,designado, fecha;
         int hora, minuto;
@@ -60,13 +61,12 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             idView = itemView.findViewById(R.id.id_tarea);
             positionView = itemView.findViewById(R.id.positionView);
             layoutABorrar = itemView.findViewById(R.id.layoutABorrar);
+            finalTimeOfTask = itemView.findViewById(R.id.finalTimesItem);
             setDarkMode();
-            final ImageButton opcionesTarea = itemView.findViewById(R.id.opcionesItems);
 
             idView.setVisibility(View.INVISIBLE);
 
             Drawable dview = itemView.getContext().getDrawable(R.drawable.item_view_borde_color);
-            Drawable dboton = itemView.getContext().getDrawable(R.drawable.item_view_backgroud_icons);
             int r = (int) (Math.random() * 255); int g = (int) (Math.random() * 255); int b = (int) (Math.random() * 255);
 
             if(r > 200 && g > 200 && b > 200){
@@ -83,18 +83,7 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             int color2 = Color.rgb(r2,g2,b2);
             ColorFilter c = new LightingColorFilter(color1 , color2);
             Objects.requireNonNull(dview).setColorFilter(c);
-            Objects.requireNonNull(dboton).setColorFilter(c);
             view.setBackground(dview);
-            opcionesTarea.setBackground(dboton);
-
-
-
-            opcionesTarea.setOnClickListener(v -> {
-                //int position_view = Integer.parseInt(positionView.getText().toString());
-              //  new optionManagerDialog(itemView.getContext(), position_view, id,titulo, hora,minuto,designado,fecha,designado);
-
-            });
-
         }
 
         private void setDarkMode(){
@@ -104,6 +93,7 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
             ArrayList<CardView> card = new ArrayList<>();
             card.add(this.card);
             ArrayList<TextView> textViews = new ArrayList<>();
+            textViews.add(finalTimeOfTask);
             textViews.add(tituloView);
             textViews.add(descripView);
             textViews.add(horaView);
@@ -133,6 +123,10 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
         this.app = app;
     }
 
+    public void setNewDataThree(List<tarea> tareas){
+        this.tareaList = tareas;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -144,15 +138,26 @@ public class recyclerAdapterItems extends RecyclerView.Adapter<recyclerAdapterIt
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+        int hora = tareaList.get(position).getHora();
+        int minuto = tareaList.get(position).getMinuto();
+        int designadoTime = Integer.parseInt(tareaList.get(position).getHorasDesignadas());
+
         holder.positionView.setText(String.valueOf(position));
         holder.idView.setText(String.valueOf(tareaList.get(position).getId()));
         holder.tituloView.setText(tareaList.get(position).getTitulo());
         holder.descripView.setText(tareaList.get(position).getDescripcion());
         holder.fechaView.setText(tareaList.get(position).getFecha());
-        holder.horaView.setText( "Inicia: " +
-                tareaList.get(position).getHora() + ":" + tareaList.get(position).getMinuto());
+        holder.horaView.setText( "Inicia: " + hora + ":" + minuto);
         holder.designadoView.setText("Tiempo Designado\n" + (tareaList.get(position).getHorasDesignadas()) + " mins.");
 
+        int suma = minuto + designadoTime;
+        if(suma >= 60){
+            suma = suma - 60;
+            hora++;
+        }
+
+        holder.finalTimeOfTask.setText("Finaliza: " + hora + ":" + suma);
         holder.id = tareaList.get(position).getId();
         holder.titulo = tareaList.get(position).getTitulo();
         holder.hora = tareaList.get(position).getHora();

@@ -13,14 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,11 +41,11 @@ import com.Mc256Design.mistareasdeldia.service.TimerService;
 import com.Mc256Design.mistareasdeldia.service.WorkManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO: instance of class
     NavDrawerImplementation ImplementsNavegationDrawer;
     SqliteManager sqliteManager;
+    SharedPreferences sp;
     //TODO: context
     Context context;
     //TODO: recyclerview variables
@@ -84,8 +89,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setDarkMode();
         this.ImplementsNavegationDrawer = new NavDrawerImplementation(context, this, MainActivity.this, R.id.nav_menu_home);
         sqliteManager = new SqliteManager(context);
-
+        sp = getSharedPreferences("MainActivitySettings", Context.MODE_PRIVATE);
         if (checkUserInsertDataBase()){
+            requireQuitSaveModeBattery();
             this.recyclerShowTask.setLayoutManager(new LinearLayoutManager(this));
             adapterItems = new recyclerAdapterItems(getTareas(), MainActivity.this);
             recyclerShowTask.setAdapter(adapterItems);
@@ -97,27 +103,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             ItemTouchHelper.SimpleCallback simpleCallback =
                     new swipeTasks(0, ItemTouchHelper.LEFT, MainActivity.this, context);
-
             new ItemTouchHelper(simpleCallback)
                     .attachToRecyclerView(recyclerShowTask);
-
             ItemTouchHelper.SimpleCallback simpleCallbackRight =
                     new swipeTasks(0, ItemTouchHelper.RIGHT, MainActivity.this, context);
-
             new ItemTouchHelper(simpleCallbackRight)
                     .attachToRecyclerView(recyclerShowTask);
             getDaySystem(this.showDia);
-
             this.addTaskButton.setOnClickListener(view -> openActivityAddTask());
-
         }
-
         this.refreshLayout.setOnRefreshListener(() -> {
-
             initialComponents();
-
             refreshLayout.setRefreshing(false);
-
         });
     }
 
@@ -126,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Cursor c = sqliteManager.queryAllRegistersUsers();
         if(c.moveToFirst()){
             userName = c.getString(1);
-            SharedPreferences sp = getSharedPreferences("userIsSet", Context.MODE_PRIVATE);
             if(!sp.getBoolean("isSetUser", false)){
                 SharedPreferences.Editor edit = sp.edit();
                 edit.putBoolean("isSetUser", true);
@@ -144,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-
             return true;
         }else{
             AlertDialog.Builder build = new AlertDialog.Builder(context);
@@ -237,9 +232,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         long alertTime = cal.getTimeInMillis() - System.currentTimeMillis();
         int random = (int) (Math.random() * 50 + 1);
         Data data = saveData(titulo,descripcion, random, tiempoDesignado);
-        WorkManager.saveNoti(alertTime, data, tag);
-        //Toast.makeText(getApplicationContext(), alertTime + " milis , hourOfdataDase " + hora + ":" + minuto , Toast.LENGTH_SHORT).show();
 
+        WorkManager.saveNoti(alertTime, data, tag, context);
+        //Toast.makeText(getApplicationContext(), alertTime + " milis , hourOfdataDase " + hora + ":" + minuto , Toast.LENGTH_SHORT).show();
     }
 
     //TODO: establece el calendario para que esto no genere errores de tiempo
@@ -295,6 +290,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         views.add(showDia);
         views.add(showUser);
         darkMode.setDarkModeTextViews(views);
+    }
+
+    //TODO pedir al usuario que desactive la gestion automatica de la app para su correcto funcionamiento
+    private void requireQuitSaveModeBattery(){
+        SharedPreferences sp = getSharedPreferences("MainActivitySettings", Context.MODE_PRIVATE);
+        if(!sp.getBoolean("totalAccess", false)){
+
+            Intent[] POWERMANAGER_INTENTS = {
+                    new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")),
+                    new Intent().setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity")),
+                    new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.startupapp.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity")),
+                    new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.BgStartUpManager")),
+                    new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")),
+                    new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
+                    new Intent().setComponent(new ComponentName("com.htc.pitroad", "com.htc.pitroad.landingpage.activity.LandingPageActivity")),
+                    new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity"))
+            };
+
+            for (Intent intent : POWERMANAGER_INTENTS){
+                if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                    AlertDialog.Builder build = new AlertDialog.Builder(context);
+                    build.setTitle("Aviso del la aplicacion");
+                    build.setMessage("Necesitamos que desabilites la gestion automatica de bateria \n para su correcto funcionamiento de la misma");
+                    build.setCancelable(false);
+                    build.setNegativeButton("No gestionar", (dialogInterface, i) -> {
+                        AlertDialog.Builder build1 = new AlertDialog.Builder(context);
+                        build1.setTitle("Aviso del la aplicacion");
+                        build1.setCancelable(false);
+                        build1.setMessage("Al no gestionarla la aplicacion puede generar una mala experiencia de usuario");
+                        build1.setNeutralButton("Esta Bien", (dialogInterface1, i1) -> dialogInterface1.dismiss());
+                        AlertDialog dialog = build1.create();
+                        dialog.show();
+                        dialogInterface.dismiss();
+                    });
+                    build.setPositiveButton("Ir a ello", (dialog, il) -> {
+                        startActivity(intent);
+                        SharedPreferences.Editor edit = sp.edit();
+                        edit.putBoolean("totalAccess", true);
+                        edit.apply();
+                    });
+
+                    AlertDialog dialog = build.create();
+                    dialog.show();
+
+                    break;
+                }
+            }
+
+        }
+
+    }
+
+    private void filterFromUp(){
+        Collections.sort(task, (tarea, t1) -> {
+            Integer tarea1 = tarea.getMinuto();
+            Integer tarea2 = t1.getMinuto();
+            return tarea2.compareTo(tarea1);
+        });
+        Collections.sort(task, (tarea, t1) -> {
+            Integer tarea1 = tarea.getHora();
+            Integer tarea2 = t1.getHora();
+            return tarea2.compareTo(tarea1);
+        });
+        adapterItems.setNewDataThree(task);
+        adapterItems.notifyDataSetChanged();
+    }
+
+    private void filterFromBottom() {
+        Collections.sort(task, (tarea, t1) -> tarea.getHora() - t1.getHora() );
+        adapterItems.setNewDataThree(task);
+        adapterItems.notifyDataSetChanged();
     }
 
 //TODO: --------metodos que se sobreescriben para el uso de la app-------------
@@ -356,16 +428,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(this.ImplementsNavegationDrawer.getDrawerLayout().isDrawerOpen(GravityCompat.START)){
             ImplementsNavegationDrawer.getDrawerLayout().closeDrawer(GravityCompat.START);
         }else{
-            finish();
+            finishAffinity();
         }
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.three_dots_main, menu);
+        String typeFilter = sp.getString("typeFilter", "NONE");
+        if(typeFilter != null){
+            switch (typeFilter) {
+                case "+A-":
+                    menu.findItem(R.id.filtMenu).setChecked(true);
+                    filterFromUp();
+                    break;
+                case "-A+":
+                    menu.findItem(R.id.filtrarMenor).setChecked(true);
+                    filterFromBottom();
+                    break;
+                case "NONE":
+                    menu.findItem(R.id.filtrarNinguno).setChecked(true);
+                    task = getTareas();
+                    adapterItems.setNewDataThree(task);
+                    adapterItems.notifyDataSetChanged();
+                    break;
+            }
+        }
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences.Editor editor = sp.edit();
+        switch (item.getItemId()){
+            case R.id.filtMenu:
+                item.setChecked(true);
+                filterFromUp();
+                editor.putString("typeFilter","+A-");
+                break;
+            case R.id.filtrarMenor:
+                item.setChecked(true);
+                filterFromBottom();
+                adapterItems.setNewDataThree(task);
+                adapterItems.notifyDataSetChanged();
+                editor.putString("typeFilter","-A+");
+                break;
+            case R.id.filtrarNinguno:
+                item.setChecked(true);
+                task = getTareas();
+                adapterItems.setNewDataThree(task);
+                adapterItems.notifyDataSetChanged();
+                editor.putString("typeFilter", "NONE");
+                break;
+        }
+        editor.apply();
+        return super.onOptionsItemSelected(item);
+    }
     //TODO: fina lde los metodos sobre escritos
-
 }

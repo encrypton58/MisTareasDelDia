@@ -26,7 +26,7 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
-        , TimePickerDialog.OnTimeSetListener{
+        , TimePickerDialog.OnTimeSetListener, SimpleAlertDialog.setonClickListener{
 
     //TODO: widgets
     TextView showTime, showDesigned, titleAddTask;
@@ -43,9 +43,11 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     int hourSystem;
     //TODO: intancia de clases
     SqliteManager sqliteManager;
+    Cursor cursorTask;
     Calendar c;
     //TODO: boleanos
     boolean isSetTomorrow;
+    boolean isErrorInTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         this.addTask = this.findViewById(R.id.addTaskAdd);
         setDarkMode();
         sqliteManager = new SqliteManager(context);
+        cursorTask = sqliteManager.queryAllRegistersTareas();
         c = Calendar.getInstance();
         this.pickTime.setOnClickListener(view -> TimePicker());
 
@@ -76,12 +79,14 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         this.addTask.setOnClickListener(view -> {
             if(!checkInputsNoEmpty()){
                 setDateFormat();
-                if(!checkTimeAndDesigned()){
+                if(!checkTimeAndDesigned() && !isErrorInTime){
                     sqliteManager.insertDataTareas(titleStrign,hourSet,
                             minutoSet,descriptionStrign,fecha,designed);
                     Toast.makeText(context, "se creo el registro", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(context, MainActivity.class));
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
+                }else if(isErrorInTime){
+                    Toast.makeText(context, "Error en el tiempo", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -95,14 +100,12 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         hourSystem = cal.get(Calendar.HOUR_OF_DAY);
         minuteSystem = cal.get(Calendar.MINUTE);
 
-
         TimePickerDialog picker = TimePickerDialog.newInstance(activityAddTask.this, hourSystem, minuteSystem, false);
         Timepoint[] times = generateTimePoints();
         if(times != null){
             picker.setDisabledTimes(times);
         }
         picker.show(this.getSupportFragmentManager(), "picker");
-
 
     }
 
@@ -213,22 +216,21 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
     //TODO: genera los timePoints que obtiene de las tareas obtenidas
     private Timepoint[] generateTimePoints(){
-        Cursor c = sqliteManager.queryAllRegistersTareas();
 
-        if(c.getCount() >= 1){
-            int[] horas = new int[c.getCount()];
-            int[] minutos = new int[c.getCount()];
-            int[] designados = new int[c.getCount()];
+        if(cursorTask.getCount() >= 1){
+            int[] horas = new int[cursorTask.getCount()];
+            int[] minutos = new int[cursorTask.getCount()];
+            int[] designados = new int[cursorTask.getCount()];
 
-            if(c.moveToFirst()){
-                horas[0] = c.getInt(2);
-                minutos[0] = c.getInt(3);
-                designados[0] = Integer.parseInt(c.getString(6)) + 1;
+            if(cursorTask.moveToFirst()){
+                horas[0] = cursorTask.getInt(2);
+                minutos[0] = cursorTask.getInt(3);
+                designados[0] = Integer.parseInt(cursorTask.getString(6)) + 1;
             }
-            for (int i = 1; c.moveToNext(); i++){
-                horas[i] = c.getInt(2);
-                minutos[i] = c.getInt(3);
-                designados[i] = Integer.parseInt(c.getString(6)) + 1;
+            for (int i = 1; cursorTask.moveToNext(); i++){
+                horas[i] = cursorTask.getInt(2);
+                minutos[i] = cursorTask.getInt(3);
+                designados[i] = Integer.parseInt(cursorTask.getString(6)) + 1;
             }
             int sumaDesignados = 0;
             for(int k = 0; k <= designados.length - 1; k++){
@@ -265,6 +267,50 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
     }
 
+    private void checkNextTask(){
+        if(!designed.equals("empty") && cursorTask.getCount() > 1){
+            if(hourSet != -1 && cursorTask.getCount() > 1) {
+                Timepoint[] times = generateTimePoints();
+                if (times != null) {
+                    int suma = minutoSet + Integer.parseInt(designed);
+                    int hora = hourSet;
+                    if (suma >= 60) {
+                        suma = suma - 60;
+                        hora++;
+                        if (hora >= 24) {
+                            hora = hora - 24;
+                        }
+                    }
+                    int minutos = minutoSet;
+                    int index = 0;
+                    while (minutos != suma) {
+                        if ( (suma == times[index].getMinute() && hora == times[index].getHour()) ||
+                                (minutos == times[index].getMinute() && hora == times[index].getHour())) {
+                            String message = "No puedes poner ese tiempo designado ya que se emplamarian las tareas\n"
+                                    + "prueba a administrar bien tu tiempo y checar los valores de las otras tareas registradas";
+                            String title = "Error en el tiempo";
+                            SimpleAlertDialog alertDialog =
+                                    new SimpleAlertDialog(context, activityAddTask.this, title, message, "Entendido", null);
+                            alertDialog.show();
+                            System.out.println("times: " + times[index].getHour() + ":"
+                                    + times[index].getMinute() + " minutos " +  minutos + " suma: " + suma);
+                            break;
+                        } else {
+                            isErrorInTime = false;
+                        }
+                        if (index != times.length - 1) {
+                            index++;
+                        }
+                        minutos++;
+                        if (minutos == 60) {
+                            minutos = minutos - 60;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //TODO: Metodos sobre escritos por las clases
 
     @SuppressLint("SetTextI18n")
@@ -272,7 +318,9 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     public void getTime(String time) {
         this.designed = time;
         this.showDesigned.setText("tiempo designado: " + this.designed + "mins");
+        checkNextTask();
     }
+
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -280,6 +328,7 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
         hourSet = hourOfDay;
         minutoSet = minute;
         SetTomorrowTask(hourOfDay,minute, hourSystem, minuteSystem);
+        checkNextTask();
         activityAddTask.this.showTime.setText("Hora de inicio: " +  hourSet + ":" + minutoSet);
     }
 
@@ -287,5 +336,11 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
+    }
+
+    @Override
+    public void positiveDialog() {
+        isErrorInTime = true;
+        Toast.makeText(context, "Se ha ejecutado el positive Button", Toast.LENGTH_SHORT).show();
     }
 }

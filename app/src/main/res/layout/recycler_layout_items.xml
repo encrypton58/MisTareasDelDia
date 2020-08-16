@@ -152,17 +152,16 @@
                 app:layout_constraintStart_toEndOf="@+id/changeColor"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/opcionesItems"
-                android:layout_width="51dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="16dp"
+            <TextView
+                android:id="@+id/finalTimesItem"
+                android:layout_width="94dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="24dp"
-                android:background="@drawable/item_view_backgroud_icons"
                 android:contentDescription="@string/app_name"
+                android:text="finaliza: 20:45"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hora_item2"
-                app:srcCompat="@drawable/nav_drawable_open_icon" />
+                app:layout_constraintTop_toBottomOf="@+id/hora_item2" />
 
             <TextView
                 android:id="@+id/tiempoDesignadoItem"
@@ -174,7 +173,7 @@
                 android:text="otro texto jaja xdxdx"
                 android:textColor="@color/negro"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/opcionesItems" />
+                app:layout_constraintTop_toBottomOf="@+id/finalTimesItem" />
 
             <TextView
                 android:id="@+id/id_tarea"
@@ -187,6 +186,7 @@
 
             <TextView
                 android:id="@+id/positionView"
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="otro testo mas jaja xdxdx c:"

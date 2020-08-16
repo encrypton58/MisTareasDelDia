@@ -29,7 +29,6 @@ public class activityOptions extends AppCompatActivity implements NavigationView
     //TODO: instancia de clases
     NavDrawerImplementation navegation;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

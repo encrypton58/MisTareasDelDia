@@ -12,18 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.work.Constraints;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import com.Mc256Design.mistareasdeldia.R;
-
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+
 public class WorkManager extends Worker {
 
-    private final static String CHANNEL_ID = "NOTIFICACION";
+    private static final String CHANNEL_WORK = "CHANNEL WORK NT";
 
     Context context;
 
@@ -33,15 +35,14 @@ public class WorkManager extends Worker {
     }
 
 
-    public static void saveNoti(long duration, Data data, String tag){
+    public static void saveNoti(long duration, Data data, String tag, Context context){
 
         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(WorkManager.class)
                 .setInitialDelay(duration, TimeUnit.MILLISECONDS)
                 .addTag(tag)
                 .setInputData(data)
                 .build();
-        androidx.work.WorkManager manager = androidx.work.WorkManager.getInstance();
-        manager.enqueue(workRequest);
+        androidx.work.WorkManager.getInstance(context).enqueue(workRequest);
     }
 
     @NonNull
@@ -69,27 +70,23 @@ public class WorkManager extends Worker {
 
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "Noticacion";
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
+            CharSequence name = "NOTIFICACION WORKERMANAGER";
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_WORK, name, NotificationManager.IMPORTANCE_HIGH);
             NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
-
-
-
         }
     }
 
     private void createNotification(String title, String description, int id){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_WORK);
         builder.setSmallIcon(R.drawable.adduser_image_user);
         builder.setContentTitle(title);
         builder.setContentText(description);
         builder.setColor(Color.BLUE);
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         builder.setLights(Color.MAGENTA, 1000, 1000);
         builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
         builder.setDefaults(Notification.DEFAULT_SOUND);
-
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
         notificationManagerCompat.notify(id, builder.build());
     }
