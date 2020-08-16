@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.ImplementsNavegationDrawer = new NavDrawerImplementation(context, this, MainActivity.this, R.id.nav_menu_home);
         sqliteManager = new SqliteManager(context);
         sp = getSharedPreferences("MainActivitySettings", Context.MODE_PRIVATE);
+        //lolll
         if (checkUserInsertDataBase()){
             requireQuitSaveModeBattery();
             this.recyclerShowTask.setLayoutManager(new LinearLayoutManager(this));
