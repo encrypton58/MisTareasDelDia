@@ -1,29 +1,42 @@
 package com.Mc256Design.mistareasdeldia.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
-import com.google.android.material.textfield.TextInputLayout;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.Mc256Design.mistareasdeldia.ClassRequired.DialogDesignedTime;
 import com.Mc256Design.mistareasdeldia.ClassRequired.SimpleAlertDialog;
 import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
+import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
+import com.google.android.material.textfield.TextInputLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.Timepoint;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
+
+import static com.Mc256Design.mistareasdeldia.service.TimerService.CHANNEL_IDSOUND;
 
 public class activityAddTask extends AppCompatActivity implements DialogDesignedTime.interfazDesignado
         , TimePickerDialog.OnTimeSetListener, SimpleAlertDialog.setonClickListener{
@@ -76,12 +89,21 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
         this.pickDesigned.setOnClickListener(view -> dialogDesigned());
 
+        this.titleAddTask.setOnClickListener(view -> {
+            /*SharedPreferences get = getSharedPreferences("audio",Context.MODE_PRIVATE);
+            Toast.makeText(context, get.getString("path", ""), Toast.LENGTH_SHORT).show();
+            MediaPlayer media = MediaPlayer.create(context, Uri.parse(get.getString("path", "")));
+            media.start();*/
+            createNotificationChannel();
+            createNotification("test", "test", 1);
+        });
+
         this.addTask.setOnClickListener(view -> {
-            if(!checkInputsNoEmpty()){
+            if (!checkInputsNoEmpty()) {
                 setDateFormat();
-                if(!checkTimeAndDesigned() && !isErrorInTime){
-                    sqliteManager.insertDataTareas(titleStrign,hourSet,
-                            minutoSet,descriptionStrign,fecha,designed);
+                if (!checkTimeAndDesigned() && !isErrorInTime) {
+                    sqliteManager.insertDataTareas(titleStrign, hourSet,
+                            minutoSet, descriptionStrign, fecha, designed);
                     Toast.makeText(context, "se creo el registro", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(context, MainActivity.class));
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_rigth);
@@ -102,16 +124,70 @@ public class activityAddTask extends AppCompatActivity implements DialogDesigned
 
         TimePickerDialog picker = TimePickerDialog.newInstance(activityAddTask.this, hourSystem, minuteSystem, false);
         Timepoint[] times = generateTimePoints();
-        if(times != null){
+        if (times != null) {
             picker.setDisabledTimes(times);
         }
         picker.show(this.getSupportFragmentManager(), "picker");
 
     }
 
+    public void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            SharedPreferences get = getSharedPreferences("audio", Context.MODE_PRIVATE);
+            CharSequence NAMEOFSYSTEMNOTIFICATION = "NOTIFICATION SYSTEM";
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_IDSOUND, NAMEOFSYSTEMNOTIFICATION, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setSound(Uri.parse(get.getString("path", "")),
+                    new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+            //notificationChannel.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getApplicationContext().getPackageName()+ "/" + R.raw.sweet)
+                    /*, new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION).build());*/
+            notificationChannel.setDescription("this generate the principals notifications of the app");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000});
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (notificationManager.getNotificationChannel(CHANNEL_IDSOUND) != null) {
+                Toast.makeText(context, "Existe el canal de notificaciones", Toast.LENGTH_SHORT).show();
+                notificationManager.deleteNotificationChannel(CHANNEL_IDSOUND);
+                notificationManager.createNotificationChannel(notificationChannel);
+            } else {
+                Toast.makeText(context, "NO EXISTE EL CANAL", Toast.LENGTH_SHORT).show();
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
+        }
+    }
+
+
+    public void createNotification(String title, String description, int id) {
+
+        SharedPreferences get = getSharedPreferences("audio", Context.MODE_PRIVATE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_IDSOUND);
+        builder.setSmallIcon(R.drawable.item_view_edit);
+        builder.setContentTitle(title);
+        builder.setContentText(description);
+        builder.setDefaults(Notification.DEFAULT_LIGHTS);
+        builder.setColor(Color.BLUE);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        try {
+            builder.setSound(Uri.parse(get.getString("path", "")));
+            //builder.setSound(Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getApplicationContext().getPackageName()+ "/" + R.raw.sweet));
+        } catch (Exception e) {
+            Toast.makeText(context, "error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+        notificationManagerCompat.notify(id, builder.build());
+    }
+
+
     //TODO: establece si el dia de mañana se ejecutara la tarea
-    private void SetTomorrowTask(int hour, int minute, int hourSystem, int minuteSystem){
-        if(hour <= hourSystem && minute <= minuteSystem){
+    private void SetTomorrowTask(int hour, int minute, int hourSystem, int minuteSystem) {
+        if (hour <= hourSystem && minute <= minuteSystem) {
             AlertDialog.Builder build = new AlertDialog.Builder(context)
                     .setTitle("Aviso")
                     .setMessage("la alarma se establecera a esa hora mañana")

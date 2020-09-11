@@ -1,17 +1,5 @@
 package com.Mc256Design.mistareasdeldia;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import com.Mc256Design.mistareasdeldia.RecyclerClass.swipeTasks;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.core.view.GravityCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.Data;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,10 +17,24 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
-import com.Mc256Design.mistareasdeldia.activities.activityAddTask;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.view.GravityCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Data;
+
 import com.Mc256Design.mistareasdeldia.ClassRequired.tarea;
 import com.Mc256Design.mistareasdeldia.RecyclerClass.recyclerAdapterItems;
+import com.Mc256Design.mistareasdeldia.RecyclerClass.swipeTasks;
+import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
+import com.Mc256Design.mistareasdeldia.activities.activityAddTask;
 import com.Mc256Design.mistareasdeldia.activities.activityAddUser;
 import com.Mc256Design.mistareasdeldia.activities.activityEditTask;
 import com.Mc256Design.mistareasdeldia.controlDarkMode.SetDarkMode;
@@ -41,6 +43,7 @@ import com.Mc256Design.mistareasdeldia.service.TimerService;
 import com.Mc256Design.mistareasdeldia.service.WorkManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     checkDataBase(task.get(i).getId(), task.get(i).getTitulo(), task.get(i).getHora(),
                             task.get(i).getMinuto(), task.get(i).getDescripcion(), task.get(i).getHorasDesignadas(), task.get(i).getFecha());
                 }
+            } else {
+
             }
             ItemTouchHelper.SimpleCallback simpleCallback =
                     new swipeTasks(0, ItemTouchHelper.LEFT, MainActivity.this, context);
@@ -365,7 +370,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void filterFromBottom() {
-        Collections.sort(task, (tarea, t1) -> tarea.getHora() - t1.getHora() );
+        Collections.sort(task, (tarea, t1) -> tarea.getMinuto() - t1.getMinuto());
+        Collections.sort(task, (tarea, ta2) -> tarea.getHora() - ta2.getHora());
         adapterItems.setNewDataThree(task);
         adapterItems.notifyDataSetChanged();
     }
@@ -451,8 +457,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case "NONE":
                     menu.findItem(R.id.filtrarNinguno).setChecked(true);
                     task = getTareas();
-                    adapterItems.setNewDataThree(task);
-                    adapterItems.notifyDataSetChanged();
+                    if (task != null && task.size() >= 2) {
+                        adapterItems.setNewDataThree(task);
+                        adapterItems.notifyDataSetChanged();
+                    }
                     break;
             }
         }

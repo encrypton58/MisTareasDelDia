@@ -3,22 +3,26 @@ package com.Mc256Design.mistareasdeldia.service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import com.Mc256Design.mistareasdeldia.MainActivity;
 import com.Mc256Design.mistareasdeldia.R;
 import com.Mc256Design.mistareasdeldia.SqliteControl.SqliteManager;
@@ -109,37 +113,47 @@ public class TimerService extends Service {
     }
 
     private void createNotificationChannel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            SharedPreferences sh = getSharedPreferences("audio", Context.MODE_PRIVATE);
+            Uri uri = Uri.parse(sh.getString("path", ""));
+            CharSequence NAMEOFSYSTEMNOTIFICATION = "NOTIFICATION SYSTEM";
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_IDSOUND, NAMEOFSYSTEMNOTIFICATION, NotificationManager.IMPORTANCE_HIGH);
+            AudioAttributes aa = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            notificationChannel.setSound(uri, aa);
+            NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(notificationChannel);
 
-                CharSequence NAMEOFSYSTEMNOTIFICATION= "NOTIFICATION SYSTEM";
-                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_IDSOUND,NAMEOFSYSTEMNOTIFICATION, NotificationManager.IMPORTANCE_DEFAULT);
-                NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.createNotificationChannel(notificationChannel);
-
-                CharSequence NAMETIMERSYSTENOTI = "NOTIFICATION TIMER SERVICE";
-                NotificationChannel notificationTimerFoureground = new NotificationChannel(CHANNEL_ID, NAMETIMERSYSTENOTI, NotificationManager.IMPORTANCE_LOW);
-                NotificationManager notificationManagerTimer = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManagerTimer.createNotificationChannel(notificationTimerFoureground);
+            CharSequence NAMETIMERSYSTENOTI = "NOTIFICATION TIMER SERVICE";
+            NotificationChannel notificationTimerFoureground = new NotificationChannel(CHANNEL_ID, NAMETIMERSYSTENOTI, NotificationManager.IMPORTANCE_LOW);
+            NotificationManager notificationManagerTimer = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManagerTimer.createNotificationChannel(notificationTimerFoureground);
 
         }
     }
 
 
-    private void createNotification(String title, String description, int id){
+    private void createNotification(String title, String description, int id) {
 
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sweet);
+        SharedPreferences sh = getSharedPreferences("audio", Context.MODE_PRIVATE);
+        Uri uri = Uri.parse(sh.getString("path", ""));
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_IDSOUND);
         builder.setSmallIcon(R.drawable.item_view_edit);
         builder.setContentTitle(title);
         builder.setContentText(description);
+        builder.setDefaults(Notification.DEFAULT_LIGHTS);
         builder.setColor(Color.BLUE);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        builder.setLights(Color.MAGENTA, 1000, 1000);
-        builder.setVibrate(new long[]{1000,1000,1000,1000,1000});
-        builder.setSound(uri);
+        try {
+            builder.setSound(uri);
+        } catch (Exception e) {
+            Toast.makeText(instancia, "error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
         notificationManagerCompat.notify(id, builder.build());
-
     }
 
     //Class del TimerCountDown
@@ -173,12 +187,9 @@ public class TimerService extends Service {
             }else {
                 restTime = millisUntilFinished / 60000 + " mins.";
             }
-
-            Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.sweet);
             Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                     .setContentTitle("algo")
                     .setContentText("algo" + " " + restTime)
-                    .setSound(uri)
                     .setPriority(NotificationManager.IMPORTANCE_LOW)
                     .setSmallIcon(R.drawable.item_view_delete)
                     .build();
